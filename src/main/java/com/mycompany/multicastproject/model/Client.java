@@ -3,7 +3,9 @@ package com.mycompany.multicastproject.model;
 import com.mycompany.multicastproject.Contants.contants;
 import com.mycompany.multicastproject.MulticastProject;
 import com.mycompany.multicastproject.astract.IClient;
+import com.mycompany.multicastproject.entity.StatusUser;
 import com.mycompany.multicastproject.entity.User;
+import com.mycompany.multicastproject.form.Login;
 import com.mycompany.multicastproject.form.Multicast;
 
 import java.io.ByteArrayOutputStream;
@@ -30,19 +32,19 @@ public class Client implements IClient {
             group = new InetSocketAddress(InetAddress.getByName(contants.MULTICAST_ADDRESS), contants.PORT);
             NetworkInterface netIf = NetworkInterface.getByName(contants.NETWORK_INTERFACE);
             this.socket.joinGroup(group, netIf);
-            User user = new User(name, socket.getLocalAddress().getHostAddress());
 
 
             // Serialize User object to a byte array
             ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
             ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
-            objectStream.writeObject(user);
+            objectStream.writeObject(Login.userCurrent);
             objectStream.flush();
             byte[] userData = byteStream.toByteArray();
 
             // Create DatagramPacket with serialized User data
             DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
             socket.send(packet);
+            Login.userCurrent.setStatusUser(StatusUser.ACTIVE);
             MulticastProject.name = name;
             Multicast mul = new Multicast();
             mul.setName(MulticastProject.name);

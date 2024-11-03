@@ -5,6 +5,8 @@
 package com.mycompany.multicastproject.form;
 
 import com.mycompany.multicastproject.MulticastProject;
+import com.mycompany.multicastproject.entity.StatusUser;
+import com.mycompany.multicastproject.entity.User;
 import com.mycompany.multicastproject.model.Client;
 
 /**
@@ -12,7 +14,7 @@ import com.mycompany.multicastproject.model.Client;
  * @author acer
  */
 public class Login extends javax.swing.JFrame {
-
+    public static User userCurrent = new User();
     /**
      * Creates new form NewJFrame
      */
@@ -106,6 +108,8 @@ public class Login extends javax.swing.JFrame {
         }
         else{
             try{
+                Login.userCurrent.setUsername(this.inputName.getText());
+                Login.userCurrent.setStatusUser(StatusUser.INPUT);
                 Client client = new Client();
                 client.login(this.inputName.getText());
                 this.setVisible(false);

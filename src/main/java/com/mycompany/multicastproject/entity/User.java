@@ -6,10 +6,13 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     private String username;
     private String IP;
+    private StatusUser statusUser;
 
-    public User(String username, String IP) {
+    public User() {}
+    public User(String username, String IP, StatusUser statusUser) {
         this.IP = IP;
         this.username = username;
+        this.statusUser = statusUser;
     }
 
     public String getIP() {
@@ -26,11 +29,19 @@ public class User implements Serializable {
         this.username = username;
     }
 
+    public StatusUser getStatusUser() {
+        return this.statusUser;
+    }
+    public void setStatusUser(StatusUser statusUser) {
+        this.statusUser = statusUser;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "IP='" + IP + '\'' +
                 ", username='" + username + '\'' +
+                ", statusUser=" + statusUser +
                 '}';
     }
 }
