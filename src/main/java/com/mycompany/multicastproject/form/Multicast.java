@@ -301,6 +301,15 @@ public class Multicast extends javax.swing.JFrame {
     public void setName(String name){
         this.name.setText(name);
     }
+    public void setEnableButtonJoin( boolean enable){
+        this.buttonJoin.setEnabled(enable);
+    }
+    public void setEnableButtonLeave(boolean enable){
+        this.buttonLeave.setEnabled(enable);
+    }
+    public void setEnableButtonSend(boolean enable){
+        this.buttonSend.setEnabled(enable);
+    }
     /**
      * @param args the command line arguments
      */

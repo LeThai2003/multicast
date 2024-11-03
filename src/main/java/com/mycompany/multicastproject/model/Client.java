@@ -42,9 +42,13 @@ public class Client implements IClient {
 
             // Create DatagramPacket with serialized User data
             DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
+            socket.send(packet);
             MulticastProject.name = name;
             Multicast mul = new Multicast();
             mul.setName(MulticastProject.name);
+            mul.setEnableButtonJoin(false);
+            mul.setEnableButtonLeave(false);
+            mul.setEnableButtonSend(false);
             mul.setLocationRelativeTo(null);
             mul.setVisible(true);
         }catch ( Exception e ){

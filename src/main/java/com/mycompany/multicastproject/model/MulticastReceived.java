@@ -26,7 +26,7 @@ public class MulticastReceived extends Thread {
                 byte[] data = incomingPacket.getData();
                 ByteArrayInputStream bis = new ByteArrayInputStream(data);
                 ObjectInputStream ois = new ObjectInputStream(bis);
-                System.out.println("multicast received : " + ois.readObject());
+                System.out.println("multicast received : " + ois.readObject().toString());
             } catch (Exception e) {
                 interrupt();
                 throw new RuntimeException(e);
