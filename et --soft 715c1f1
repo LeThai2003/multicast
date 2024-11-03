@@ -1,0 +1,30 @@
+[33mcommit a1a6cc311541c237d341b1620abb08e34cf33461[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Merge: 4acc74e 715c1f1
+Author: Le Duc Thai <leducthai1008@gmail.com>
+Date:   Sun Nov 3 14:48:28 2024 +0700
+
+    create new group
+
+[33mcommit 4acc74e93e6efd2c70d2cde88f6ee5b7e8ec345b[m
+Author: Le Duc Thai <leducthai1008@gmail.com>
+Date:   Sun Nov 3 14:46:28 2024 +0700
+
+    create new group
+
+[33mcommit 715c1f14952b9cf2312949329205528aaa29f38a[m
+Author: daophanquochoai <hoai23828@mgail.com>
+Date:   Sun Nov 3 14:10:07 2024 +0700
+
+    fix template
+
+[33mcommit 8555713e1d7d2e79612145871d62deffccc8d9fa[m
+Author: daophanquochoai <hoai23828@mgail.com>
+Date:   Sun Nov 3 13:51:09 2024 +0700
+
+    join group common
+
+[33mcommit afe40a5228e8c5b9590ab68cc57575feaefc1552[m
+Author: Le Duc Thai <leducthai1008@gmail.com>
+Date:   Sun Nov 3 13:01:10 2024 +0700
+
+    multicast
