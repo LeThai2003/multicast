@@ -39,7 +39,8 @@ public class MulticastReceived extends Thread {
                 ByteArrayInputStream bis = new ByteArrayInputStream(data);
                 ObjectInputStream ois = new ObjectInputStream(bis);
                 User userSender = (User) ois.readObject();
-                if( userSender.getStatusUser() == StatusUser.INPUT){
+                System.out.println("Multicast received : " + userSender.toString());
+                if( userSender.getStatusUser() == StatusUser.INPUT && !userSender.getUserId().equals(Login.userCurrent.getUserId())){
 
 
                     // Serialize User object to a byte array

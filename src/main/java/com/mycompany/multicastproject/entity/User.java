@@ -4,12 +4,13 @@ import java.io.Serializable;
 
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
+    private String userId;
     private String username;
     private String IP;
     private StatusUser statusUser;
 
     public User() {}
-    public User(String username, String IP, StatusUser statusUser) {
+    public User(Integer userId, String username, String IP, StatusUser statusUser) {
         this.IP = IP;
         this.username = username;
         this.statusUser = statusUser;
@@ -36,10 +37,19 @@ public class User implements Serializable {
         this.statusUser = statusUser;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "IP='" + IP + '\'' +
+                ", userId='" + userId + '\'' +
                 ", username='" + username + '\'' +
                 ", statusUser=" + statusUser +
                 '}';

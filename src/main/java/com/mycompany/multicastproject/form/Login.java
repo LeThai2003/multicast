@@ -9,6 +9,8 @@ import com.mycompany.multicastproject.entity.StatusUser;
 import com.mycompany.multicastproject.entity.User;
 import com.mycompany.multicastproject.model.Client;
 
+import java.net.InetAddress;
+
 /**
  *
  * @author acer
@@ -108,8 +110,13 @@ public class Login extends javax.swing.JFrame {
         }
         else{
             try{
+                InetAddress localHost = InetAddress.getLocalHost();
+                String ipAddress = localHost.getHostAddress();
+                System.out.println(ipAddress);
                 Login.userCurrent.setUsername(this.inputName.getText());
                 Login.userCurrent.setStatusUser(StatusUser.INPUT);
+                Login.userCurrent.setUserId(ipAddress);
+                System.out.println(Login.userCurrent.getUserId());
                 Client client = new Client();
                 client.login(this.inputName.getText());
                 this.setVisible(false);
