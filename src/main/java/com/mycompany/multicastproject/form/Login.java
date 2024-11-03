@@ -2,7 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.mycompany.multicastproject;
+package com.mycompany.multicastproject.form;
+
+import com.mycompany.multicastproject.MulticastProject;
+import com.mycompany.multicastproject.model.Client;
 
 /**
  *
@@ -102,12 +105,13 @@ public class Login extends javax.swing.JFrame {
             System.out.println(this.inputName);
         }
         else{
-            MulticastProject.name = this.inputName.getText();
-            this.setVisible(false);
-            Multicast mul = new Multicast();
-            mul.setName(MulticastProject.name);
-            mul.setLocationRelativeTo(null);
-            mul.setVisible(true);
+            try{
+                Client client = new Client();
+                client.login(this.inputName.getText());
+                this.setVisible(false);
+            }catch (Exception e ){
+                e.printStackTrace();
+            }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
