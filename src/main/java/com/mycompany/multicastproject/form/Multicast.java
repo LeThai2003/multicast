@@ -13,15 +13,12 @@ import javax.swing.DefaultListModel;
  */
 public class Multicast extends javax.swing.JFrame {
     private final DefaultListModel<String> listModelMessage = new DefaultListModel<>();
-    private final DefaultListModel<String> listModelUser = new DefaultListModel<>();
+    private static final DefaultListModel<String> listModelUser = new DefaultListModel<>();
     /**
      * Creates new form NewJFrame
      */
     public Multicast() {
         initComponents();
-        addUserModel("Hoai");
-        addUserModel("Hoai");
-        addUserModel("Thai");
     }
 
     /**
@@ -135,9 +132,9 @@ public class Multicast extends javax.swing.JFrame {
                         .addComponent(buttonLeave)))
                 .addContainerGap())
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(149, 149, 149)
+                .addGap(178, 178, 178)
                 .addComponent(jLabel2)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,8 +261,11 @@ public class Multicast extends javax.swing.JFrame {
         );
 
         jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("User");
+        jLabel5.setToolTipText("");
 
+        listUser.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         listUser.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 listUserMouseClicked(evt);
@@ -390,9 +390,6 @@ public class Multicast extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void listUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listUserMouseClicked
-        System.out.println(evt.getSource());
-        System.out.println(evt.getSource());
-        
         System.out.println(listUser.getSelectedValue());
     }//GEN-LAST:event_listUserMouseClicked
 
@@ -411,8 +408,8 @@ public class Multicast extends javax.swing.JFrame {
     public void setEnableButtonSend(boolean enable){
         this.buttonSend.setEnabled(enable);
     }
-    public void addUserModel(String name){
-        this.listModelUser.addElement(name);
+    public static void addUserModel(String name){
+        listModelUser.addElement(name);
     }
     /**
      * @param args the command line arguments
