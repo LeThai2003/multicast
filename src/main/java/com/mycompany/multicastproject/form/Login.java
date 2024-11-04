@@ -9,6 +9,7 @@ import com.mycompany.multicastproject.entity.StatusUser;
 import com.mycompany.multicastproject.entity.User;
 import com.mycompany.multicastproject.model.Client;
 
+import java.io.IOException;
 import java.net.InetAddress;
 
 /**
@@ -17,6 +18,16 @@ import java.net.InetAddress;
  */
 public class Login extends javax.swing.JFrame {
     public static User userCurrent = new User();
+    public static Client client;
+
+    static {
+        try {
+            client = new Client();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Creates new form NewJFrame
      */
@@ -115,7 +126,6 @@ public class Login extends javax.swing.JFrame {
                 Login.userCurrent.setUsername(this.inputName.getText());
                 Login.userCurrent.setStatusUser(StatusUser.INPUT);
                 Login.userCurrent.setUserId(ipAddress);
-                Client client = new Client();
                 client.login(this.inputName.getText());
                 this.setVisible(false);
             }catch (Exception e ){

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class MulticastReceived extends Thread {
     private final MulticastSocket socket;
     private final InetSocketAddress group;
-    private final Set<User> users = new HashSet<>();
+    public static Set<User> users = new HashSet<>();
     private final Set<Group> groups = new HashSet<>();
 
     public MulticastReceived(MulticastSocket socket) throws UnknownHostException {
@@ -29,17 +29,20 @@ public class MulticastReceived extends Thread {
     public void run() {
         byte[] buffer = new byte[contants.MAX_MESSAGE_LENGTH];
         DatagramPacket incomingPacket = new DatagramPacket(buffer, buffer.length);
-        while( true ){
-            try{
+        while (true) {
+            try {
                 socket.receive(incomingPacket);
                 byte[] data = incomingPacket.getData();
                 ByteArrayInputStream bis = new ByteArrayInputStream(data);
                 ObjectInputStream ois = new ObjectInputStream(bis);
-                if(ois.readObject() instanceof User userSender){
-                    users.add(userSender);
-                    if( userSender.getStatusUser() == StatusUser.INPUT && !userSender.getUserId().equals(Login.userCurrent.getUserId())){
-                        Multicast.addUserModel(userSender.getUsername());
 
+                if (ois.readObject() instanceof User userSender) {
+                    System.out.println("multicast received : " + userSender.toString());
+                    if (userSender.getStatusUser() != StatusUser.INPUT) {
+                        users.add(userSender);
+                    }
+                    if (userSender.getStatusUser() == StatusUser.INPUT && !userSender.getUserId().equals(Login.userCurrent.getUserId())) {
+                        Multicast.addUserModel(userSender.getUsername());
                         // Serialize User object to a byte array
                         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
                         ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
@@ -52,16 +55,14 @@ public class MulticastReceived extends Thread {
                         socket.send(packet);
                     }
                     Multicast.reset(users.stream().filter(user -> !Objects.equals(user.getUserId(), Login.userCurrent.getUserId())).collect(Collectors.toSet()));
-                }else if( ois.readObject() instanceof Group){
-//                    Group groupSender = (Group) ois.readObject();
-//                    groups.add(groupSender);
-
+                } else {
+                    System.out.println(ois.readObject());
                 }
-
             } catch (Exception e) {
                 interrupt();
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
         }
     }
+
 }

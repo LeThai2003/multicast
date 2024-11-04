@@ -1,18 +1,22 @@
 package com.mycompany.multicastproject.entity;
 
+import java.io.Serializable;
+import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Group {
-    private String port;
-    private String IP;
+public class Group implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private int port;
+    private InetAddress IP;
     private String nameGroup;
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
-    public String getIP() {
+    public InetAddress getIP() {
         return IP;
     }
 
-    public void setIP(String IP) {
+    public void setIP(InetAddress IP) {
         this.IP = IP;
     }
 
@@ -24,11 +28,11 @@ public class Group {
         this.nameGroup = nameGroup;
     }
 
-    public String getPort() {
+    public int getPort() {
         return port;
     }
 
-    public void setPort(String port) {
+    public void setPort(int port) {
         this.port = port;
     }
 
@@ -38,5 +42,15 @@ public class Group {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "port=" + port +
+                ", IP=" + IP +
+                ", nameGroup='" + nameGroup + '\'' +
+                ", users=" + users +
+                '}';
     }
 }

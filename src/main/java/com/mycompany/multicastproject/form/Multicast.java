@@ -4,12 +4,20 @@
  */
 package com.mycompany.multicastproject.form;
 
+import com.mycompany.multicastproject.entity.Group;
 import com.mycompany.multicastproject.entity.User;
 
 import java.net.InetAddress;
+import java.util.List;
 import java.util.Set;
 import javax.swing.DefaultListModel;
-
+import com.mycompany.multicastproject.model.Client;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author acer
@@ -17,9 +25,20 @@ import javax.swing.DefaultListModel;
 public class Multicast extends javax.swing.JFrame {
     private final DefaultListModel<String> listModelMessage = new DefaultListModel<>();
     private static final DefaultListModel<String> listModelUser = new DefaultListModel<>();
-    /**
-     * Creates new form NewJFrame
-     */
+    private final DefaultListModel<Group> listModelGroup = new DefaultListModel<>();
+ 
+//    private List<Group> groups;
+    
+    
+    
+    public static DefaultListModel<String> getAllUser(){
+        return listModelUser;
+    }
+    
+    public void setbuttonSend(){
+        buttonSend.setVisible(true);
+    }
+    
     public Multicast() {
         initComponents();
     }
@@ -37,7 +56,7 @@ public class Multicast extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        listGroup = new javax.swing.JList<>();
+        listGroup = new javax.swing.JList<>(listModelGroup);
         jLabel3 = new javax.swing.JLabel();
         inputIp = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
@@ -48,7 +67,7 @@ public class Multicast extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        listMessage = new javax.swing.JList<>();
+        listMessage = new javax.swing.JList<>(listModelMessage);
         jLabel6 = new javax.swing.JLabel();
         name = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
@@ -68,6 +87,11 @@ public class Multicast extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel2.setText("Group");
 
+        listGroup.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listGroupMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(listGroup);
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
@@ -192,10 +216,20 @@ public class Multicast extends javax.swing.JFrame {
         jLabel1.setText("Message:");
 
         inputSend.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        inputSend.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                inputSendKeyPressed(evt);
+            }
+        });
         jScrollPane2.setViewportView(inputSend);
 
         buttonSend.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         buttonSend.setText("Send");
+        buttonSend.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSendActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -378,7 +412,10 @@ public class Multicast extends javax.swing.JFrame {
     }//GEN-LAST:event_nameGroupActionPerformed
 
     private void buttonJoinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonJoinActionPerformed
-        // TODO add your handling code here:
+        Group tmpGroup = listGroup.getSelectedValue();
+
+        Login.client.joinGroup(tmpGroup.getIP(), tmpGroup.getPort(), tmpGroup.getNameGroup());
+        btnSend.setVisible(true);
     }//GEN-LAST:event_buttonJoinActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
@@ -390,6 +427,10 @@ public class Multicast extends javax.swing.JFrame {
         CreateNewGroup newGroup = new CreateNewGroup(this, true);
         newGroup.setLocationRelativeTo(null);
         newGroup.setVisible(true);
+        
+        Group returnedGroup = newGroup.getGroup();
+        listModelGroup.addElement(returnedGroup);
+        Login.client.sendCreateGroup(returnedGroup);
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void listUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listUserMouseClicked
@@ -399,6 +440,47 @@ public class Multicast extends javax.swing.JFrame {
     private void listUserValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listUserValueChanged
         // TODO add your handling code here:
     }//GEN-LAST:event_listUserValueChanged
+
+    private void listGroupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listGroupMouseClicked
+        Group tmpGroup = listGroup.getSelectedValue();
+        if(tmpGroup!=null){
+            inputIp.setText(tmpGroup.getIP().toString());
+            inputPort.setText(String.valueOf(tmpGroup.getPort()));
+            inputIp.setEnabled(false);
+            inputPort.setEnabled(false);
+            buttonJoin.setEnabled(true);
+        }else{
+            inputIp.setEnabled(true);
+            inputPort.setEnabled(true);
+            buttonJoin.setEnabled(false);
+        }
+
+    }//GEN-LAST:event_listGroupMouseClicked
+
+    private void inputSendKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputSendKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            evt.consume();
+            if(!inputSend.getText().isEmpty()){
+                buttonSendActionPerformed(null);
+            }
+//            lblSendNotify.setVisible(false);
+        }
+    }//GEN-LAST:event_inputSendKeyPressed
+
+    private void buttonSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSendActionPerformed
+               String tmpMessage = this.inputSend.getText();
+        System.out.println(tmpMessage);
+       if(tmpMessage.isEmpty()){
+//            lblSendNotify.setText("Vui lòng nhập nội dung");
+//            lblSendNotify.setVisible(true);
+       }else{
+           DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+           LocalTime sendTime = LocalTime.now();
+           this.listModelMessage.addElement(sendTime.format(formatter) + " [" + this.name.getText() + "]:  " + tmpMessage);
+           inputSend.setText(null);
+//           lblSendNotify.setVisible(false);
+       }
+    }//GEN-LAST:event_buttonSendActionPerformed
     public void setName(String name){
         this.name.setText(name);
     }
@@ -482,7 +564,7 @@ public class Multicast extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JList<String> listGroup;
+    private javax.swing.JList<Group> listGroup;
     private javax.swing.JList<String> listMessage;
     private javax.swing.JList<String> listUser;
     private javax.swing.JTextField name;
