@@ -4,17 +4,24 @@
  */
 package com.mycompany.multicastproject.form;
 
+import java.net.InetAddress;
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author acer
  */
 public class Multicast extends javax.swing.JFrame {
-
+    private final DefaultListModel<String> listModelMessage = new DefaultListModel<>();
+    private final DefaultListModel<String> listModelUser = new DefaultListModel<>();
     /**
      * Creates new form NewJFrame
      */
     public Multicast() {
         initComponents();
+        addUserModel("Hoai");
+        addUserModel("Hoai");
+        addUserModel("Thai");
     }
 
     /**
@@ -53,7 +60,7 @@ public class Multicast extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        listUser = new javax.swing.JList<>(listModelUser);
         btnSend = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -146,13 +153,14 @@ public class Multicast extends javax.swing.JFrame {
                     .addComponent(inputPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
                 .addGap(14, 14, 14)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buttonLeave)
-                    .addComponent(buttonJoin)
-                    .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(buttonLeave)
+                        .addComponent(buttonJoin)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         listMessage.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
@@ -186,9 +194,7 @@ public class Multicast extends javax.swing.JFrame {
         inputSend.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jScrollPane2.setViewportView(inputSend);
 
-        buttonSend.setBackground(new java.awt.Color(0, 153, 255));
         buttonSend.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        buttonSend.setForeground(new java.awt.Color(255, 255, 255));
         buttonSend.setText("Send");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -260,12 +266,17 @@ public class Multicast extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel5.setText("User");
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        listUser.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listUserMouseClicked(evt);
+            }
         });
-        jScrollPane4.setViewportView(jList1);
+        listUser.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                listUserValueChanged(evt);
+            }
+        });
+        jScrollPane4.setViewportView(listUser);
 
         btnSend.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         btnSend.setText("Send");
@@ -296,9 +307,8 @@ public class Multicast extends javax.swing.JFrame {
                 .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSend)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnSend))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -317,17 +327,16 @@ public class Multicast extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(8, 8, 8)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(8, 8, 8)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -379,6 +388,17 @@ public class Multicast extends javax.swing.JFrame {
         newGroup.setLocationRelativeTo(null);
         newGroup.setVisible(true);
     }//GEN-LAST:event_btnCreateActionPerformed
+
+    private void listUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listUserMouseClicked
+        System.out.println(evt.getSource());
+        System.out.println(evt.getSource());
+        
+        System.out.println(listUser.getSelectedValue());
+    }//GEN-LAST:event_listUserMouseClicked
+
+    private void listUserValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listUserValueChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_listUserValueChanged
     public void setName(String name){
         this.name.setText(name);
     }
@@ -390,6 +410,9 @@ public class Multicast extends javax.swing.JFrame {
     }
     public void setEnableButtonSend(boolean enable){
         this.buttonSend.setEnabled(enable);
+    }
+    public void addUserModel(String name){
+        this.listModelUser.addElement(name);
     }
     /**
      * @param args the command line arguments
@@ -426,7 +449,7 @@ public class Multicast extends javax.swing.JFrame {
             }
         });
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnSend;
@@ -443,7 +466,6 @@ public class Multicast extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -455,6 +477,7 @@ public class Multicast extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JList<String> listGroup;
     private javax.swing.JList<String> listMessage;
+    private javax.swing.JList<String> listUser;
     private javax.swing.JTextField name;
     private javax.swing.JTextField nameGroup;
     // End of variables declaration//GEN-END:variables
