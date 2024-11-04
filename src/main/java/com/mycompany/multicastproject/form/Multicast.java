@@ -415,9 +415,10 @@ public class Multicast extends javax.swing.JFrame {
         listModelUser.addElement(name);
     }
     public static void reset(Set<User> userSet){
-        listModelUser.removeAllElements();
         userSet.forEach(user -> {
-            addUserModel(user.getUsername());
+            if( !listModelUser.contains(user.getUsername())){
+                addUserModel(user.getUsername());
+            }
         });
     }
     /**

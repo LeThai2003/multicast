@@ -18,6 +18,5 @@ public class MulticastProject {
         Login login = new Login();
         login.setLocationRelativeTo(null);
         login.setVisible(true);
-        
     }
 }

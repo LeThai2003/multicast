@@ -1,6 +1,7 @@
 package com.mycompany.multicastproject.model;
 
 import com.mycompany.multicastproject.Contants.contants;
+import com.mycompany.multicastproject.entity.Group;
 import com.mycompany.multicastproject.entity.StatusUser;
 import com.mycompany.multicastproject.entity.User;
 import com.mycompany.multicastproject.form.Login;
@@ -17,6 +18,7 @@ public class MulticastReceived extends Thread {
     private final MulticastSocket socket;
     private final InetSocketAddress group;
     private final Set<User> users = new HashSet<>();
+    private final Set<Group> groups = new HashSet<>();
 
     public MulticastReceived(MulticastSocket socket) throws UnknownHostException {
        this.socket = socket;
@@ -33,24 +35,29 @@ public class MulticastReceived extends Thread {
                 byte[] data = incomingPacket.getData();
                 ByteArrayInputStream bis = new ByteArrayInputStream(data);
                 ObjectInputStream ois = new ObjectInputStream(bis);
-                User userSender = (User) ois.readObject();
-                System.out.println("Multicast received : " + userSender.toString());
-                users.add(userSender);
-                if( userSender.getStatusUser() == StatusUser.INPUT && !userSender.getUserId().equals(Login.userCurrent.getUserId())){
-                    Multicast.addUserModel(userSender.getUsername());
+                if( ois.readObject() instanceof User){
+                    User userSender = (User) ois.readObject();
+                    users.add(userSender);
+                    if( userSender.getStatusUser() == StatusUser.INPUT && !userSender.getUserId().equals(Login.userCurrent.getUserId())){
+                        Multicast.addUserModel(userSender.getUsername());
 
-                    // Serialize User object to a byte array
-                    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-                    ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
-                    objectStream.writeObject(Login.userCurrent);
-                    objectStream.flush();
-                    byte[] userData = byteStream.toByteArray();
+                        // Serialize User object to a byte array
+                        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+                        ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
+                        objectStream.writeObject(Login.userCurrent);
+                        objectStream.flush();
+                        byte[] userData = byteStream.toByteArray();
 
-                    // Create DatagramPacket with serialized User data
-                    DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
-                    socket.send(packet);
+                        // Create DatagramPacket with serialized User data
+                        DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
+                        socket.send(packet);
+                    }
+                    Multicast.reset(users.stream().filter(user -> !Objects.equals(user.getUserId(), Login.userCurrent.getUserId())).collect(Collectors.toSet()));
+                }else if( ois.readObject() instanceof Group){
+                    Group groupSender = (Group) ois.readObject();
+                    groups.add(groupSender);
+
                 }
-                Multicast.reset(users.stream().filter(user -> !Objects.equals(user.getUserId(), Login.userCurrent.getUserId())).collect(Collectors.toSet()));
 
             } catch (Exception e) {
                 interrupt();
