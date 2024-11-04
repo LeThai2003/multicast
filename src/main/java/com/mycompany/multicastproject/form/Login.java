@@ -112,11 +112,9 @@ public class Login extends javax.swing.JFrame {
             try{
                 InetAddress localHost = InetAddress.getLocalHost();
                 String ipAddress = localHost.getHostAddress();
-                System.out.println(ipAddress);
                 Login.userCurrent.setUsername(this.inputName.getText());
                 Login.userCurrent.setStatusUser(StatusUser.INPUT);
                 Login.userCurrent.setUserId(ipAddress);
-                System.out.println(Login.userCurrent.getUserId());
                 Client client = new Client();
                 client.login(this.inputName.getText());
                 this.setVisible(false);
