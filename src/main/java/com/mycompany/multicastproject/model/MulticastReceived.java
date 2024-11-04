@@ -35,8 +35,7 @@ public class MulticastReceived extends Thread {
                 byte[] data = incomingPacket.getData();
                 ByteArrayInputStream bis = new ByteArrayInputStream(data);
                 ObjectInputStream ois = new ObjectInputStream(bis);
-                if( ois.readObject() instanceof User){
-                    User userSender = (User) ois.readObject();
+                if(ois.readObject() instanceof User userSender){
                     users.add(userSender);
                     if( userSender.getStatusUser() == StatusUser.INPUT && !userSender.getUserId().equals(Login.userCurrent.getUserId())){
                         Multicast.addUserModel(userSender.getUsername());
@@ -54,8 +53,8 @@ public class MulticastReceived extends Thread {
                     }
                     Multicast.reset(users.stream().filter(user -> !Objects.equals(user.getUserId(), Login.userCurrent.getUserId())).collect(Collectors.toSet()));
                 }else if( ois.readObject() instanceof Group){
-                    Group groupSender = (Group) ois.readObject();
-                    groups.add(groupSender);
+//                    Group groupSender = (Group) ois.readObject();
+//                    groups.add(groupSender);
 
                 }
 
