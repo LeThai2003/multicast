@@ -6,12 +6,10 @@ import com.mycompany.multicastproject.entity.User;
 import com.mycompany.multicastproject.form.Login;
 import com.mycompany.multicastproject.form.Multicast;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -52,9 +50,7 @@ public class MulticastReceived extends Thread {
                     DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
                     socket.send(packet);
                 }
-                if( userSender.getStatusUser() == StatusUser.INPUT && userSender.getUserId().equals(Login.userCurrent.getUserId())){
-                    Multicast.reset(users.stream().filter(user -> user.getUserId()!= userSender.getUserId()).collect(Collectors.toSet()));
-                }
+                Multicast.reset(users.stream().filter(user -> !Objects.equals(user.getUserId(), Login.userCurrent.getUserId())).collect(Collectors.toSet()));
 
             } catch (Exception e) {
                 interrupt();
