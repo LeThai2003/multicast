@@ -263,7 +263,7 @@ public class CreateNewGroup extends javax.swing.JDialog {
         group.setNameGroup(txtNameGroup.getText());
         group.setIP(createGroupIP());
         group.setPort(contants.PORT);
-        group.setUsers(MulticastReceived.users.stream().filter( user -> listUserJoined.contains(user.getUsername())).toList());
+//        group.setUsers(MulticastReceived.users.stream().filter( user -> listUserJoined.contains(user.getUsername())).toList());
         this.dispose();
 //        System.out.println(group);
     }//GEN-LAST:event_jButton1ActionPerformed

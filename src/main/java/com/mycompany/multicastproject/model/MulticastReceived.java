@@ -35,13 +35,14 @@ public class MulticastReceived extends Thread {
                 byte[] data = incomingPacket.getData();
                 ByteArrayInputStream bis = new ByteArrayInputStream(data);
                 ObjectInputStream ois = new ObjectInputStream(bis);
-
-                if (ois.readObject() instanceof User userSender) {
+                Object receivedObject = ois.readObject();
+                if (receivedObject instanceof User userSender) {
                     System.out.println("multicast received : " + userSender.toString());
                     if (userSender.getStatusUser() != StatusUser.INPUT) {
                         users.add(userSender);
                     }
-                    if (userSender.getStatusUser() == StatusUser.INPUT && !userSender.getUserId().equals(Login.userCurrent.getUserId())) {
+                    if (userSender.getStatusUser() == StatusUser.INPUT ) {
+//    && !userSender.getUserId().equals(Login.userCurrent.getUserId(
                         Multicast.addUserModel(userSender.getUsername());
                         // Serialize User object to a byte array
                         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
@@ -55,8 +56,13 @@ public class MulticastReceived extends Thread {
                         socket.send(packet);
                     }
                     Multicast.reset(users.stream().filter(user -> !Objects.equals(user.getUserId(), Login.userCurrent.getUserId())).collect(Collectors.toSet()));
-                } else {
-                    System.out.println(ois.readObject());
+                } else if( receivedObject instanceof Group groupSender )
+                {
+                    groups.add(groupSender);
+                    System.out.println(groupSender.getIP());
+                    System.out.println(groupSender.getNameGroup());
+                    System.out.println(groupSender.getPort());
+                    Multicast.resetGroup(groups);
                 }
             } catch (Exception e) {
                 interrupt();

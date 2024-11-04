@@ -5,27 +5,24 @@
 package com.mycompany.multicastproject.form;
 
 import com.mycompany.multicastproject.entity.Group;
+import com.mycompany.multicastproject.entity.Message;
 import com.mycompany.multicastproject.entity.User;
 
 import java.net.InetAddress;
-import java.util.List;
+import java.net.UnknownHostException;
 import java.util.Set;
 import javax.swing.DefaultListModel;
-import com.mycompany.multicastproject.model.Client;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 /**
  *
  * @author acer
  */
 public class Multicast extends javax.swing.JFrame {
-    private final DefaultListModel<String> listModelMessage = new DefaultListModel<>();
+    private static final DefaultListModel<String> listModelMessage = new DefaultListModel<>();
     private static final DefaultListModel<String> listModelUser = new DefaultListModel<>();
-    private final DefaultListModel<Group> listModelGroup = new DefaultListModel<>();
+    private static final DefaultListModel<Group> listModelGroup = new DefaultListModel<>();
  
 //    private List<Group> groups;
     
@@ -130,7 +127,11 @@ public class Multicast extends javax.swing.JFrame {
         btnCreate.setText("Create Group");
         btnCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCreateActionPerformed(evt);
+                try {
+                    btnCreateActionPerformed(evt);
+                } catch (UnknownHostException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -422,7 +423,7 @@ public class Multicast extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSendActionPerformed
 
-    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) throws UnknownHostException {//GEN-FIRST:event_btnCreateActionPerformed
         // TODO add your handling code here:
         CreateNewGroup newGroup = new CreateNewGroup(this, true);
         newGroup.setLocationRelativeTo(null);
@@ -444,7 +445,7 @@ public class Multicast extends javax.swing.JFrame {
     private void listGroupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listGroupMouseClicked
         Group tmpGroup = listGroup.getSelectedValue();
         if(tmpGroup!=null){
-            inputIp.setText(tmpGroup.getIP().toString());
+            inputIp.setText(tmpGroup.getIP().getHostAddress());
             inputPort.setText(String.valueOf(tmpGroup.getPort()));
             inputIp.setEnabled(false);
             inputPort.setEnabled(false);
@@ -469,7 +470,6 @@ public class Multicast extends javax.swing.JFrame {
 
     private void buttonSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSendActionPerformed
                String tmpMessage = this.inputSend.getText();
-        System.out.println(tmpMessage);
        if(tmpMessage.isEmpty()){
 //            lblSendNotify.setText("Vui lòng nhập nội dung");
 //            lblSendNotify.setVisible(true);
@@ -481,6 +481,13 @@ public class Multicast extends javax.swing.JFrame {
 //           lblSendNotify.setVisible(false);
        }
     }//GEN-LAST:event_buttonSendActionPerformed
+
+    public static void addMessage (Message message){
+        listModelMessage.addElement(message.toString());
+    }
+    public static void addMessageIntoGroup ( String message  ){
+        listModelMessage.addElement(message);
+    }
     public void setName(String name){
         this.name.setText(name);
     }
@@ -501,6 +508,13 @@ public class Multicast extends javax.swing.JFrame {
             if( !listModelUser.contains(user.getUsername())){
                 addUserModel(user.getUsername());
             }
+        });
+    }
+
+    public static void resetGroup(Set<Group> groupSet){
+        listModelGroup.removeAllElements();
+        groupSet.forEach(group -> {
+            listModelGroup.addElement(group);
         });
     }
     /**

@@ -4,22 +4,22 @@ import com.mycompany.multicastproject.Contants.contants;
 import com.mycompany.multicastproject.MulticastProject;
 import com.mycompany.multicastproject.astract.IClient;
 import com.mycompany.multicastproject.entity.Group;
+import com.mycompany.multicastproject.entity.Message;
 import com.mycompany.multicastproject.entity.StatusUser;
 import com.mycompany.multicastproject.entity.User;
 import com.mycompany.multicastproject.form.Login;
 import com.mycompany.multicastproject.form.Multicast;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.*;
+import java.time.LocalTime;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Client implements IClient {
-    Scanner scanner = new Scanner(System.in);
     private final MulticastSocket socket;
+    private MulticastSocket sender;
     private InetSocketAddress group;
     MulticastReceived multicastReceived;
 
@@ -68,31 +68,28 @@ public class Client implements IClient {
 
     @Override
     public void joinGroup(InetAddress ipGroup, int port, String groupName) {
-        InetSocketAddress inetGroup;
-        MulticastSocket newSocket;
         try {
-            newSocket = new MulticastSocket(port);
-            
-            inetGroup = new InetSocketAddress(ipGroup, port);
+            this.sender = new MulticastSocket(port);
             NetworkInterface netIf = NetworkInterface.getByName(contants.NETWORK_INTERFACE);
-     
-            newSocket.joinGroup(inetGroup, netIf);
-                
-            Thread receiverThread = new Thread(() -> receiveMessages(newSocket,groupName));
+            group = new InetSocketAddress(ipGroup, port);
+            this.sender.joinGroup(group, netIf);
+            Thread receiverThread = new Thread(() -> receiveMessages(sender,groupName));
             receiverThread.start();
-
+            sendMessage("user into");
+//            sender.leaveGroup(ipGroup);
             // Gửi tin nhắn từ người dùng đến nhóm
-            System.out.println("Nhập tin nhắn để gửi, gõ 'exit' để thoát.");
-            String message;
-            while (!(message = scanner.nextLine()).equalsIgnoreCase("exit")) {
-                sendMessage(newSocket, ipGroup, port, message);
-            }
-
-            newSocket.leaveGroup(ipGroup);
-            newSocket.close();
-            System.out.println("Đã rời khỏi nhóm " + groupName);
+//            System.out.println("Nhập tin nhắn để gửi, gõ 'exit' để thoát.");
+//            String message;
+//            while (!(message = scanner.nextLine()).equalsIgnoreCase("exit")) {
+//                sendMessage(newSocket, ipGroup, port, message);
+//            }
+//
+//            newSocket.leaveGroup(ipGroup);
+//            newSocket.close();
+//            System.out.println("Đã rời khỏi nhóm " + groupName);
             
         }catch ( Exception e ){
+            // xoa nhom khi out het
             e.printStackTrace();
         }
     }
@@ -123,6 +120,33 @@ public class Client implements IClient {
         }
     }
 
+    @Override
+    public void sendMessage(String message) {
+        try{
+            Message mess = new Message(message, LocalTime.now(),Login.userCurrent);
+            // Initialize the ByteArrayOutputStream and ObjectOutputStream correctly
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(byteStream); // Corrected this line
+
+            // Write the Group object to the ObjectOutputStream
+            oos.writeObject(mess);
+            oos.flush();
+
+            // Get the byte array from the ByteArrayOutputStream
+            byte[] userData = byteStream.toByteArray();
+
+            // Create DatagramPacket with serialized User data
+            DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
+            sender.send(packet);
+
+            // Close the streams after use
+            oos.close(); // Close ObjectOutputStream
+            byteStream.close(); // Close ByteArrayOutputStream
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
     private static void sendMessage(MulticastSocket socket,InetAddress ipGroup, int port, String message) {
         try {
@@ -140,9 +164,11 @@ public class Client implements IClient {
                 byte[] receiveData = new byte[1024];
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 socket.receive(receivePacket);
-
-                String receivedMessage = new String(receivePacket.getData(), 0, receivePacket.getLength());
-                System.out.println("Nhận từ nhóm " + groupName + ": " + receivedMessage);
+                byte[] data = receivePacket.getData();
+                ByteArrayInputStream bis = new ByteArrayInputStream(data);
+                ObjectInputStream ois = new ObjectInputStream(bis);
+                Object receivedObject = ois.readObject();
+                System.out.println(receivedObject.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();

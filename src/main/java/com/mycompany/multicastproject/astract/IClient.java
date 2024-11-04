@@ -7,5 +7,6 @@ public interface IClient {
     void login( String name);
     void joinGroup(InetAddress ipGroup, int port, String groupName);
     void sendCreateGroup( Group group);
+    void sendMessage(String message);
 }
 
