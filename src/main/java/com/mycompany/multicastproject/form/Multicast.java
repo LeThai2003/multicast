@@ -4,7 +4,10 @@
  */
 package com.mycompany.multicastproject.form;
 
+import com.mycompany.multicastproject.entity.User;
+
 import java.net.InetAddress;
+import java.util.Set;
 import javax.swing.DefaultListModel;
 
 /**
@@ -410,6 +413,12 @@ public class Multicast extends javax.swing.JFrame {
     }
     public static void addUserModel(String name){
         listModelUser.addElement(name);
+    }
+    public static void reset(Set<User> userSet){
+        listModelUser.removeAllElements();
+        userSet.forEach(user -> {
+            addUserModel(user.getUsername());
+        });
     }
     /**
      * @param args the command line arguments
