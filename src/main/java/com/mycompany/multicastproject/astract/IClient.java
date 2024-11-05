@@ -8,5 +8,6 @@ public interface IClient {
     void joinGroup(InetAddress ipGroup, int port, String groupName);
     void sendCreateGroup( Group group);
     void sendMessage(String message);
+    void leaveGroup();
 }
 

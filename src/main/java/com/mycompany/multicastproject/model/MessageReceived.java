@@ -33,11 +33,13 @@ public class MessageReceived extends Thread {
                 Object receivedObject = ois.readObject();
                 if( receivedObject instanceof Message messageSender )
                 {
+                    System.out.println("recei");
                     messageList.add(messageSender);
                     Multicast.addMessage(messageSender);
                 }
             }
         } catch (Exception e) {
+            interrupt();
             e.printStackTrace();
         }
     }

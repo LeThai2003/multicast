@@ -59,9 +59,6 @@ public class Client implements IClient {
             MulticastProject.name = name;
             Multicast mul = new Multicast();
             mul.setName(MulticastProject.name);
-            mul.setEnableButtonJoin(false);
-            mul.setEnableButtonLeave(false);
-            mul.setEnableButtonSend(false);
             mul.setLocationRelativeTo(null);
             mul.setVisible(true);
         }catch ( Exception e ){
@@ -145,6 +142,20 @@ public class Client implements IClient {
             // Close the streams after use
             oos.close(); // Close ObjectOutputStream
             byteStream.close(); // Close ByteArrayOutputStream
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void leaveGroup() {
+        try{
+            sendMessage(Login.userCurrent.getUsername() + " leave group");
+            NetworkInterface netIf = NetworkInterface.getByName(contants.NETWORK_INTERFACE);
+            sender.leaveGroup(group, netIf); // Rời khỏi nhóm multicast
+            if( messageReceived != null && messageReceived.isAlive()){
+                messageReceived.interrupt();
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

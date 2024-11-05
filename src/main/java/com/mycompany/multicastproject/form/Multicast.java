@@ -117,14 +117,23 @@ public class Multicast extends javax.swing.JFrame {
 
         buttonLeave.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         buttonLeave.setText("Leave");
+        buttonLeave.setEnabled(false);
+        buttonLeave.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                buttonLeaveMouseClicked(evt);
+            }
+        });
 
         buttonJoin.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         buttonJoin.setText("Join");
         buttonJoin.setToolTipText("");
-        buttonJoin.setEnabled(false);
         buttonJoin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonJoinActionPerformed(evt);
+                try {
+                    buttonJoinActionPerformed(evt);
+                } catch (UnknownHostException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -430,7 +439,7 @@ public class Multicast extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_nameGroupActionPerformed
 
-    private void buttonJoinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonJoinActionPerformed
+    private void buttonJoinActionPerformed(java.awt.event.ActionEvent evt) throws UnknownHostException {//GEN-FIRST:event_buttonJoinActionPerformed
         Group tmpGroup = listGroup.getSelectedValue();
         if( inputPort.getText().isBlank() || inputIp.getText().isBlank() ){
             memo.setText("IP and Port can't empty");
@@ -444,9 +453,11 @@ public class Multicast extends javax.swing.JFrame {
             }, 3000); // 3000 milliseconds = 3 seconds
             return;
         }
-        Login.client.joinGroup(tmpGroup.getIP(), tmpGroup.getPort(), tmpGroup.getNameGroup());
-        btnSend.setVisible(true);
-        btnSend.setEnabled(true);
+        Login.client.joinGroup(InetAddress.getByName(inputIp.getText()),  Integer.parseInt(inputPort.getText()), tmpGroup == null ? inputIp.getText() : tmpGroup.getNameGroup());
+        buttonSend.setEnabled(true);
+        buttonJoin.setEnabled(false);
+        buttonLeave.setEnabled(true);
+        nameGroup.setText( tmpGroup == null ? inputIp.getText() : tmpGroup.getNameGroup());
     }//GEN-LAST:event_buttonJoinActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
@@ -510,6 +521,15 @@ public class Multicast extends javax.swing.JFrame {
             //           lblSendNotify.setVisible(false)
         }
     }//GEN-LAST:event_buttonSendActionPerformed
+
+    private void buttonLeaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonLeaveMouseClicked
+        Login.client.leaveGroup();
+        buttonSend.setEnabled(false);
+        buttonJoin.setEnabled(true);
+        nameGroup.setText("");
+        buttonLeave.setEnabled(false);
+        listModelMessage.removeAllElements();
+    }//GEN-LAST:event_buttonLeaveMouseClicked
 
     public static void addMessage (Message message){
         listModelMessage.addElement(message.toString());
