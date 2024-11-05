@@ -17,6 +17,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -41,7 +42,41 @@ public class Multicast extends javax.swing.JFrame {
     
     public Multicast() {
         initComponents();
+        setupButton();
+        lblGroupNotify.setText(null);
+        lblSendNotify.setText(null);
+        lblUserNotify.setText(null);
     }
+
+    private void setupButton(){
+        javax.swing.event.DocumentListener documentListener = new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                checkButtonEnable();
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                checkButtonEnable();
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                checkButtonEnable();
+            }
+        };
+        inputIp.getDocument().addDocumentListener(documentListener);
+        inputPort.getDocument().addDocumentListener(documentListener);
+    }
+    
+        private void checkButtonEnable() {
+        // Kiểm tra nếu cả hai trường nhập đều không rỗng
+            boolean isInputAValid = !inputIp.getText().isBlank();
+            boolean isInputBValid = !inputPort.getText().isBlank();
+
+            // Bật nút buttonA nếu cả hai trường đều có văn bản
+            buttonJoin.setEnabled(isInputAValid && isInputBValid && !listModelGroup.isEmpty());
+        }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -64,7 +99,13 @@ public class Multicast extends javax.swing.JFrame {
         buttonLeave = new javax.swing.JButton();
         buttonJoin = new javax.swing.JButton();
         btnCreate = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
+        lblGroupNotify = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        listUser = new javax.swing.JList<>(listModelUser);
+        btnSend = new javax.swing.JButton();
+        lblUserNotify = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         listMessage = new javax.swing.JList<>(listModelMessage);
@@ -76,21 +117,21 @@ public class Multicast extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         inputSend = new javax.swing.JTextPane();
         buttonSend = new javax.swing.JButton();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        listUser = new javax.swing.JList<>(listModelUser);
-        btnSend = new javax.swing.JButton();
-        memo = new javax.swing.JTextField();
+        lblSendNotify = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(1055, 409));
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel2.setText("Group");
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Groups");
 
         listGroup.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 listGroupMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                listGroupMousePressed(evt);
             }
         });
         jScrollPane3.setViewportView(listGroup);
@@ -115,7 +156,9 @@ public class Multicast extends javax.swing.JFrame {
             }
         });
 
-        buttonLeave.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        buttonLeave.setBackground(new java.awt.Color(255, 51, 51));
+        buttonLeave.setFont(new java.awt.Font("Microsoft JhengHei UI", 1, 16)); // NOI18N
+        buttonLeave.setForeground(new java.awt.Color(255, 255, 255));
         buttonLeave.setText("Leave");
         buttonLeave.setEnabled(false);
         buttonLeave.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -124,30 +167,29 @@ public class Multicast extends javax.swing.JFrame {
             }
         });
 
-        buttonJoin.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        buttonJoin.setBackground(new java.awt.Color(51, 255, 51));
+        buttonJoin.setFont(new java.awt.Font("Microsoft JhengHei UI", 1, 18)); // NOI18N
+        buttonJoin.setForeground(new java.awt.Color(255, 255, 255));
         buttonJoin.setText("Join");
         buttonJoin.setToolTipText("");
+        buttonJoin.setEnabled(false);
         buttonJoin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    buttonJoinActionPerformed(evt);
-                } catch (UnknownHostException e) {
-                    throw new RuntimeException(e);
-                }
+                buttonJoinActionPerformed(evt);
             }
         });
 
-        btnCreate.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        btnCreate.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         btnCreate.setText("Create Group");
         btnCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    btnCreateActionPerformed(evt);
-                } catch (UnknownHostException e) {
-                    throw new RuntimeException(e);
-                }
+                btnCreateActionPerformed(evt);
             }
         });
+
+        lblGroupNotify.setForeground(new java.awt.Color(255, 51, 51));
+        lblGroupNotify.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblGroupNotify.setText("Group error!");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -156,6 +198,7 @@ public class Multicast extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblGroupNotify, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane3)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -166,17 +209,14 @@ public class Multicast extends javax.swing.JFrame {
                             .addComponent(inputIp)
                             .addComponent(inputPort)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 74, Short.MAX_VALUE)
+                        .addGap(9, 9, 9)
                         .addComponent(btnCreate)
-                        .addGap(26, 26, 26)
-                        .addComponent(buttonJoin, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(buttonLeave)))
+                        .addGap(32, 32, 32)
+                        .addComponent(buttonJoin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(buttonLeave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(178, 178, 178)
-                .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -191,130 +231,22 @@ public class Multicast extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(inputPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
-                .addGap(14, 14, 14)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(buttonLeave)
-                        .addComponent(buttonJoin)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        listMessage.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jScrollPane1.setViewportView(listMessage);
-
-        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jLabel6.setText("Name");
-
-        name.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        name.setEnabled(false);
-        name.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nameActionPerformed(evt);
-            }
-        });
-
-        jLabel8.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jLabel8.setText("Name Group");
-
-        nameGroup.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        nameGroup.setEnabled(false);
-        nameGroup.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nameGroupActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel1.setText("Message:");
-
-        inputSend.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        inputSend.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                inputSendKeyPressed(evt);
-            }
-        });
-        jScrollPane2.setViewportView(inputSend);
-
-        buttonSend.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        buttonSend.setText("Send");
-        buttonSend.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonSendActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addGap(29, 29, 29)
-                        .addComponent(nameGroup, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(name, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(buttonSend)
-                .addContainerGap(23, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(nameGroup, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonSend))
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(buttonLeave, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(buttonJoin, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(lblGroupNotify)
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("User");
+        jLabel5.setText("Users");
         jLabel5.setToolTipText("");
 
         listUser.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
@@ -330,13 +262,20 @@ public class Multicast extends javax.swing.JFrame {
         });
         jScrollPane4.setViewportView(listUser);
 
-        btnSend.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        btnSend.setFont(new java.awt.Font("Microsoft JhengHei UI", 1, 16)); // NOI18N
         btnSend.setText("Send");
+        btnSend.setMaximumSize(new java.awt.Dimension(74, 27));
+        btnSend.setMinimumSize(new java.awt.Dimension(74, 27));
+        btnSend.setPreferredSize(new java.awt.Dimension(74, 27));
         btnSend.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSendActionPerformed(evt);
             }
         });
+
+        lblUserNotify.setForeground(new java.awt.Color(255, 51, 51));
+        lblUserNotify.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblUserNotify.setText("User error!");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -345,22 +284,132 @@ public class Multicast extends javax.swing.JFrame {
             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                    .addComponent(lblUserNotify, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(110, Short.MAX_VALUE)
-                .addComponent(btnSend)
-                .addGap(105, 105, 105))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lblUserNotify)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        listMessage.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jScrollPane1.setViewportView(listMessage);
+
+        jLabel6.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel6.setText("User Name");
+
+        name.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        name.setEnabled(false);
+        name.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nameActionPerformed(evt);
+            }
+        });
+
+        jLabel8.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel8.setText("Group Name");
+
+        nameGroup.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        nameGroup.setEnabled(false);
+        nameGroup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nameGroupActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Microsoft JhengHei UI", 1, 16)); // NOI18N
+        jLabel1.setText("Message:");
+
+        inputSend.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        inputSend.setEnabled(false);
+        inputSend.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                inputSendKeyPressed(evt);
+            }
+        });
+        jScrollPane2.setViewportView(inputSend);
+
+        buttonSend.setBackground(new java.awt.Color(0, 153, 255));
+        buttonSend.setFont(new java.awt.Font("Microsoft JhengHei UI", 1, 16)); // NOI18N
+        buttonSend.setForeground(new java.awt.Color(255, 255, 255));
+        buttonSend.setText("Send");
+        buttonSend.setEnabled(false);
+        buttonSend.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        buttonSend.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSendActionPerformed(evt);
+            }
+        });
+
+        lblSendNotify.setForeground(new java.awt.Color(255, 51, 51));
+        lblSendNotify.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblSendNotify.setText("Send chat error!");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblSendNotify, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(buttonSend, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(6, 6, 6))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(name)
+                                .addGap(124, 124, 124))
+                            .addComponent(nameGroup)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnSend))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(nameGroup, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2)
+                    .addComponent(buttonSend, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(lblSendNotify)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -368,56 +417,29 @@ public class Multicast extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(8, 8, 8)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-
-        memo.setBackground(new java.awt.Color(242, 242, 242));
-        memo.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        memo.setForeground(new java.awt.Color(255, 255, 153));
-        memo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        memo.setBorder(null);
-        memo.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(memo, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(308, 308, 308))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-                .addComponent(memo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -439,32 +461,39 @@ public class Multicast extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_nameGroupActionPerformed
 
-    private void buttonJoinActionPerformed(java.awt.event.ActionEvent evt) throws UnknownHostException {//GEN-FIRST:event_buttonJoinActionPerformed
+    private void buttonJoinActionPerformed(java.awt.event.ActionEvent evt){//GEN-FIRST:event_buttonJoinActionPerformed
+
         Group tmpGroup = listGroup.getSelectedValue();
+        
         if( inputPort.getText().isBlank() || inputIp.getText().isBlank() ){
-            memo.setText("IP and Port can't empty");
+            lblGroupNotify.setText("IP and Port can't empty");
             // Tạo một Timer để đặt lại memo sau 3 giây
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    memo.setText(null); // Xóa thông báo sau 3 giây
+                    lblGroupNotify.setText(null); // Xóa thông báo sau 3 giây
                 }
             }, 3000); // 3000 milliseconds = 3 seconds
             return;
         }
-        Login.client.joinGroup(InetAddress.getByName(inputIp.getText()),  Integer.parseInt(inputPort.getText()), tmpGroup == null ? inputIp.getText() : tmpGroup.getNameGroup());
-        buttonSend.setEnabled(true);
-        buttonJoin.setEnabled(false);
-        buttonLeave.setEnabled(true);
-        nameGroup.setText( tmpGroup == null ? inputIp.getText() : tmpGroup.getNameGroup());
+        try {
+            Login.client.joinGroup(InetAddress.getByName(inputIp.getText()),  Integer.parseInt(inputPort.getText()), tmpGroup == null ? inputIp.getText() : tmpGroup.getNameGroup());
+            inputSend.setEnabled(true);
+            buttonSend.setEnabled(true);
+            buttonJoin.setEnabled(false);
+            buttonLeave.setEnabled(true);
+            nameGroup.setText( tmpGroup == null ? inputIp.getText() : tmpGroup.getNameGroup());
+        } catch (UnknownHostException e) {
+        lblGroupNotify.setText("Invalid IP address"); // Hiển thị lỗi khi địa chỉ IP không hợp lệ
+        }
     }//GEN-LAST:event_buttonJoinActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSendActionPerformed
 
-    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) throws UnknownHostException {//GEN-FIRST:event_btnCreateActionPerformed
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt){//GEN-FIRST:event_btnCreateActionPerformed
         // TODO add your handling code here:
         CreateNewGroup newGroup = new CreateNewGroup(this, true);
         newGroup.setLocationRelativeTo(null);
@@ -488,15 +517,15 @@ public class Multicast extends javax.swing.JFrame {
         if(tmpGroup!=null){
             inputIp.setText(tmpGroup.getIP().getHostAddress());
             inputPort.setText(String.valueOf(tmpGroup.getPort()));
-//            inputIp.setEnabled(false);
-//            inputPort.setEnabled(false);
-//            buttonJoin.setEnabled(true);
+            inputIp.setEnabled(false);
+            inputPort.setEnabled(false);
+            buttonJoin.setEnabled(true);
         }
-//        else{
-//            inputIp.setEnabled(true);
-//            inputPort.setEnabled(true);
-//            buttonJoin.setEnabled(false);
-//        }
+        else{
+            inputIp.setEnabled(true);
+            inputPort.setEnabled(true);
+            buttonJoin.setEnabled(false);
+        }
 
     }//GEN-LAST:event_listGroupMouseClicked
 
@@ -504,32 +533,52 @@ public class Multicast extends javax.swing.JFrame {
         if(evt.getKeyCode() == KeyEvent.VK_ENTER){
             evt.consume();
             if(!inputSend.getText().isEmpty()){
-                buttonSendActionPerformed(null);
+                buttonSendActionPerformed(null); 
+                lblSendNotify.setText("Please, enter text!");
+                
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        lblSendNotify.setText(null); // Xóa thông báo sau 3 giây
+                    }
+                }, 3000); // 3000 milliseconds = 3 seconds
             }
-//            lblSendNotify.setVisible(false);
         }
     }//GEN-LAST:event_inputSendKeyPressed
 
     private void buttonSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSendActionPerformed
         String tmpMessage = this.inputSend.getText();
         if(tmpMessage.isEmpty()){
-    //            lblSendNotify.setText("Vui lòng nhập nội dung");
-    //            lblSendNotify.setVisible(true);
-        }else{
-            Login.client.sendMessage(inputSend.getText());
-            inputSend.setText(null);
-            //           lblSendNotify.setVisible(false)
+                lblSendNotify.setText("Please, enter text!");
+                Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    lblSendNotify.setText(null); // Xóa thông báo sau 3 giây
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+            return;
         }
+        Login.client.sendMessage(inputSend.getText());
+        inputSend.setText(null);
+            //           lblSendNotify.setVisible(false)
+        
     }//GEN-LAST:event_buttonSendActionPerformed
 
     private void buttonLeaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonLeaveMouseClicked
         Login.client.leaveGroup();
+        inputSend.setEnabled(false);
         buttonSend.setEnabled(false);
         buttonJoin.setEnabled(true);
         nameGroup.setText("");
         buttonLeave.setEnabled(false);
         listModelMessage.removeAllElements();
     }//GEN-LAST:event_buttonLeaveMouseClicked
+
+    private void listGroupMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listGroupMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_listGroupMousePressed
 
     public static void addMessage (Message message){
         listModelMessage.addElement(message.toString());
@@ -621,16 +670,17 @@ public class Multicast extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JLabel lblGroupNotify;
+    private javax.swing.JLabel lblSendNotify;
+    private javax.swing.JLabel lblUserNotify;
     private javax.swing.JList<Group> listGroup;
     private javax.swing.JList<String> listMessage;
     private javax.swing.JList<String> listUser;
-    private javax.swing.JTextField memo;
     private javax.swing.JTextField name;
     private javax.swing.JTextField nameGroup;
     // End of variables declaration//GEN-END:variables

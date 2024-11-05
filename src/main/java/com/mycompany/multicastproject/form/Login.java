@@ -8,9 +8,12 @@ import com.mycompany.multicastproject.MulticastProject;
 import com.mycompany.multicastproject.entity.StatusUser;
 import com.mycompany.multicastproject.entity.User;
 import com.mycompany.multicastproject.model.Client;
+import java.awt.event.KeyEvent;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  *
@@ -67,6 +70,11 @@ public class Login extends javax.swing.JFrame {
         inputName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inputNameActionPerformed(evt);
+            }
+        });
+        inputName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                inputNameKeyPressed(evt);
             }
         });
 
@@ -137,6 +145,24 @@ public class Login extends javax.swing.JFrame {
     private void inputNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputNameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_inputNameActionPerformed
+
+    private void inputNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputNameKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            evt.consume();
+            if(!inputName.getText().isEmpty()){
+                jButton1ActionPerformed(null); 
+//                lblSendNotify.setText("Please, enter text!");
+//                
+//                Timer timer = new Timer();
+//                timer.schedule(new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        lblSendNotify.setText(null); // Xóa thông báo sau 3 giây
+//                    }
+//                }, 3000); // 3000 milliseconds = 3 seconds
+            }
+        }
+    }//GEN-LAST:event_inputNameKeyPressed
 
     /**
      * @param args the command line arguments

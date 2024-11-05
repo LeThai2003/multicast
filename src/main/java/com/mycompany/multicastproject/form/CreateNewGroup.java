@@ -62,10 +62,44 @@ public class CreateNewGroup extends javax.swing.JDialog {
         initComponents();
         DefaultListModel<String> allUsers = Multicast.getAllUser();
         for (int i = 0; i < allUsers.getSize(); i++) {
-            listUser.addElement(allUsers.getElementAt(i));
+            String user = allUsers.getElementAt(i);
+            // Kiểm tra nếu user không phải là null trước khi thêm vào listUser
+            if (user != null) {
+                listUser.addElement(user);
+            }
         }
+        setupButton();
     }
 
+    
+    
+    private void setupButton() {
+        javax.swing.event.DocumentListener documentListener = new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                checkButtonEnable();
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                checkButtonEnable();
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                checkButtonEnable();
+            }
+        };
+        txtNameGroup.getDocument().addDocumentListener(documentListener);
+    }
+    
+    
+    private void checkButtonEnable() {
+        // Kiểm tra nếu cả hai trường nhập đều không rỗng
+        boolean isInputAValid = !txtNameGroup.getText().isBlank();
+        // Bật nút buttonA nếu cả hai trường đều có văn bản
+        btnCreate.setEnabled(isInputAValid && !listUserJoined.isEmpty());
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -88,7 +122,7 @@ public class CreateNewGroup extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         listUserOut = new javax.swing.JList<>(listUser);
-        jButton1 = new javax.swing.JButton();
+        btnCreate = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -175,10 +209,11 @@ public class CreateNewGroup extends javax.swing.JDialog {
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        jButton1.setText("CREATE");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnCreate.setText("CREATE");
+        btnCreate.setEnabled(false);
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnCreateActionPerformed(evt);
             }
         });
 
@@ -190,7 +225,7 @@ public class CreateNewGroup extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(182, 182, 182)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addComponent(jLabel2)
@@ -215,7 +250,7 @@ public class CreateNewGroup extends javax.swing.JDialog {
                 .addGap(28, 28, 28)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addComponent(btnCreate)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -259,14 +294,14 @@ public class CreateNewGroup extends javax.swing.JDialog {
 
 
     
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         group.setNameGroup(txtNameGroup.getText());
         group.setIP(createGroupIP());
         group.setPort(contants.PORT);
 //        group.setUsers(MulticastReceived.users.stream().filter( user -> listUserJoined.contains(user.getUsername())).toList());
         this.dispose();
 //        System.out.println(group);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnCreateActionPerformed
 
     /**
      * @param args the command line arguments
@@ -311,7 +346,7 @@ public class CreateNewGroup extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnCreate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
