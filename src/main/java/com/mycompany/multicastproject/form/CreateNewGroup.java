@@ -98,7 +98,7 @@ public class CreateNewGroup extends javax.swing.JDialog {
         // Kiểm tra nếu cả hai trường nhập đều không rỗng
         boolean isInputAValid = !txtNameGroup.getText().isBlank();
         // Bật nút buttonA nếu cả hai trường đều có văn bản
-        btnCreate.setEnabled(isInputAValid && !listUserJoined.isEmpty());
+        btnCreate.setEnabled(isInputAValid);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -298,6 +298,7 @@ public class CreateNewGroup extends javax.swing.JDialog {
         group.setNameGroup(txtNameGroup.getText());
         group.setIP(createGroupIP());
         group.setPort(contants.PORT);
+        System.out.println(group);
 //        group.setUsers(MulticastReceived.users.stream().filter( user -> listUserJoined.contains(user.getUsername())).toList());
         this.dispose();
 //        System.out.println(group);
