@@ -29,3 +29,4 @@ com\mycompany\multicastproject\model\MulticastSender.class
 com\mycompany\multicastproject\form\Login.class
 com\mycompany\multicastproject\model\Client.class
 com\mycompany\multicastproject\form\Multicast$7.class
+com\mycompany\multicastproject\model\MessageReceived.class

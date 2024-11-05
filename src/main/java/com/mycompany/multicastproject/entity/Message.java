@@ -2,6 +2,7 @@ package com.mycompany.multicastproject.entity;
 
 import java.io.Serializable;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -41,6 +42,9 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        return "[" + time + "]" + user.getUsername() + "> " + content;
+        LocalTime time = LocalTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String formattedTime = time.format(formatter);
+        return "[" + formattedTime + "]    " + user.getUsername() + " >  " + content;
     }
 }

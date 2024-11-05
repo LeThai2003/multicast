@@ -18,7 +18,7 @@ public class MulticastReceived extends Thread {
     private final MulticastSocket socket;
     private final InetSocketAddress group;
     public static Set<User> users = new HashSet<>();
-    private final Set<Group> groups = new HashSet<>();
+    public final Set<Group> groups = new HashSet<>();
 
     public MulticastReceived(MulticastSocket socket) throws UnknownHostException {
        this.socket = socket;
@@ -56,12 +56,10 @@ public class MulticastReceived extends Thread {
                         socket.send(packet);
                     }
                     Multicast.reset(users.stream().filter(user -> !Objects.equals(user.getUserId(), Login.userCurrent.getUserId())).collect(Collectors.toSet()));
-                } else if( receivedObject instanceof Group groupSender )
+                }
+                else if( receivedObject instanceof Group groupSender )
                 {
                     groups.add(groupSender);
-                    System.out.println(groupSender.getIP());
-                    System.out.println(groupSender.getNameGroup());
-                    System.out.println(groupSender.getPort());
                     Multicast.resetGroup(groups);
                 }
             } catch (Exception e) {

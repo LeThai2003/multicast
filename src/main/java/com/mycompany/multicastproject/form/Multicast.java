@@ -15,6 +15,9 @@ import javax.swing.DefaultListModel;
 import java.awt.event.KeyEvent;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  *
  * @author acer
@@ -78,6 +81,7 @@ public class Multicast extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         listUser = new javax.swing.JList<>(listModelUser);
         btnSend = new javax.swing.JButton();
+        memo = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -117,6 +121,7 @@ public class Multicast extends javax.swing.JFrame {
         buttonJoin.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         buttonJoin.setText("Join");
         buttonJoin.setToolTipText("");
+        buttonJoin.setEnabled(false);
         buttonJoin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonJoinActionPerformed(evt);
@@ -377,6 +382,13 @@ public class Multicast extends javax.swing.JFrame {
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
+        memo.setBackground(new java.awt.Color(242, 242, 242));
+        memo.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        memo.setForeground(new java.awt.Color(255, 255, 153));
+        memo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        memo.setBorder(null);
+        memo.setEnabled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -385,12 +397,18 @@ public class Multicast extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(memo, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(308, 308, 308))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addComponent(memo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15))
         );
 
         pack();
@@ -414,9 +432,21 @@ public class Multicast extends javax.swing.JFrame {
 
     private void buttonJoinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonJoinActionPerformed
         Group tmpGroup = listGroup.getSelectedValue();
-
+        if( inputPort.getText().isBlank() || inputIp.getText().isBlank() ){
+            memo.setText("IP and Port can't empty");
+            // Tạo một Timer để đặt lại memo sau 3 giây
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    memo.setText(null); // Xóa thông báo sau 3 giây
+                }
+            }, 3000); // 3000 milliseconds = 3 seconds
+            return;
+        }
         Login.client.joinGroup(tmpGroup.getIP(), tmpGroup.getPort(), tmpGroup.getNameGroup());
         btnSend.setVisible(true);
+        btnSend.setEnabled(true);
     }//GEN-LAST:event_buttonJoinActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
@@ -447,14 +477,15 @@ public class Multicast extends javax.swing.JFrame {
         if(tmpGroup!=null){
             inputIp.setText(tmpGroup.getIP().getHostAddress());
             inputPort.setText(String.valueOf(tmpGroup.getPort()));
-            inputIp.setEnabled(false);
-            inputPort.setEnabled(false);
-            buttonJoin.setEnabled(true);
-        }else{
-            inputIp.setEnabled(true);
-            inputPort.setEnabled(true);
-            buttonJoin.setEnabled(false);
+//            inputIp.setEnabled(false);
+//            inputPort.setEnabled(false);
+//            buttonJoin.setEnabled(true);
         }
+//        else{
+//            inputIp.setEnabled(true);
+//            inputPort.setEnabled(true);
+//            buttonJoin.setEnabled(false);
+//        }
 
     }//GEN-LAST:event_listGroupMouseClicked
 
@@ -469,17 +500,15 @@ public class Multicast extends javax.swing.JFrame {
     }//GEN-LAST:event_inputSendKeyPressed
 
     private void buttonSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSendActionPerformed
-               String tmpMessage = this.inputSend.getText();
-       if(tmpMessage.isEmpty()){
-//            lblSendNotify.setText("Vui lòng nhập nội dung");
-//            lblSendNotify.setVisible(true);
-       }else{
-           DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-           LocalTime sendTime = LocalTime.now();
-           this.listModelMessage.addElement(sendTime.format(formatter) + " [" + this.name.getText() + "]:  " + tmpMessage);
-           inputSend.setText(null);
-//           lblSendNotify.setVisible(false);
-       }
+        String tmpMessage = this.inputSend.getText();
+        if(tmpMessage.isEmpty()){
+    //            lblSendNotify.setText("Vui lòng nhập nội dung");
+    //            lblSendNotify.setVisible(true);
+        }else{
+            Login.client.sendMessage(inputSend.getText());
+            inputSend.setText(null);
+            //           lblSendNotify.setVisible(false)
+        }
     }//GEN-LAST:event_buttonSendActionPerformed
 
     public static void addMessage (Message message){
@@ -581,6 +610,7 @@ public class Multicast extends javax.swing.JFrame {
     private javax.swing.JList<Group> listGroup;
     private javax.swing.JList<String> listMessage;
     private javax.swing.JList<String> listUser;
+    private javax.swing.JTextField memo;
     private javax.swing.JTextField name;
     private javax.swing.JTextField nameGroup;
     // End of variables declaration//GEN-END:variables
