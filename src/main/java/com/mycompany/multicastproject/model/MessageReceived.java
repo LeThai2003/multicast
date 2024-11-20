@@ -12,16 +12,26 @@ import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 public class MessageReceived extends Thread {
     private final MulticastSocket socket;
     private List<Message> messageList;
+    private Group groupJoin;
 
-    public MessageReceived( MulticastSocket socket){
+    public MessageReceived( MulticastSocket socket, Group group ) {
         this.socket = socket;
+        this.groupJoin = group;
         this.messageList = new ArrayList<>();
+    }
+
+    public Group getGroup() {
+        return groupJoin;
+    }
+    public void setGroup( Group group ) {
+        this.groupJoin = group;
     }
 
     @Override
@@ -41,12 +51,16 @@ public class MessageReceived extends Thread {
                     Multicast.addMessage(messageSender);
                 }
                 else if( receivedObject instanceof JoinGroup joinGroup){
-                    Optional<Group> group = MulticastReceived.groups.stream().filter(g -> g.getIP().equals(joinGroup.getGroup().getIP())).findFirst();
+                    Optional<Group> group = MulticastReceived.groupAll.stream().filter(g -> g.getIP().equals(joinGroup.getGroup().getIP())).findFirst();
+
                     if( group.isPresent() ){
                         group.get().getUsersJoined().add(joinGroup.getUser());
                         Message message = new Message(joinGroup.getUser().getUsername() + " into group", LocalTime.now(),joinGroup.getUser());
                         messageList.add(message);
                         Multicast.addMessage(message);
+                        if( groupJoin != null && groupJoin.getIP().equals(joinGroup.getGroup().getIP()) ){
+                            Multicast.resetAll( new HashSet<>(group.get().getUsersJoined()));
+                        }
                     }
                 }
             }

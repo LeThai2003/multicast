@@ -70,13 +70,14 @@ public class Client implements IClient {
             NetworkInterface netIf = NetworkInterface.getByName(contants.NETWORK_INTERFACE);
             group = new InetSocketAddress(ipGroup, port);
             this.sender.joinGroup(group, netIf);
-            messageReceived = new MessageReceived(sender);
-            messageReceived.start();
-            // infomation send
             Group groupTemp = new Group();
             groupTemp.setPort(port);
             groupTemp.setNameGroup(groupName);
             groupTemp.setIP(ipGroup);
+
+            messageReceived = new MessageReceived(sender, groupTemp);
+            messageReceived.start();
+            // infomation send
             JoinGroup joinGroup = new JoinGroup(groupTemp, Login.userCurrent);
             ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(byteStream); // Corrected this line
@@ -94,17 +95,6 @@ public class Client implements IClient {
             // Close the streams after use
             oos.close(); // Close ObjectOutputStream
             byteStream.close(); // Close ByteArrayOutputStream
-//            sender.leaveGroup(ipGroup);
-            // Gửi tin nhắn từ người dùng đến nhóm
-//            System.out.println("Nhập tin nhắn để gửi, gõ 'exit' để thoát.");
-//            String message;
-//            while (!(message = scanner.nextLine()).equalsIgnoreCase("exit")) {
-//                sendMessage(newSocket, ipGroup, port, message);
-//            }
-//
-//            newSocket.leaveGroup(ipGroup);
-//            newSocket.close();
-//            System.out.println("Đã rời khỏi nhóm " + groupName);
             
         }catch ( Exception e ){
             // xoa nhom khi out het
@@ -169,10 +159,12 @@ public class Client implements IClient {
         try{
             sendMessage(Login.userCurrent.getUsername() + " leave group");
             NetworkInterface netIf = NetworkInterface.getByName(contants.NETWORK_INTERFACE);
+
             sender.leaveGroup(group, netIf); // Rời khỏi nhóm multicast
             if( messageReceived != null && messageReceived.isAlive()){
                 messageReceived.interrupt();
             }
+            messageReceived.setGroup(new Group());
         }catch (Exception e){
             e.printStackTrace();
         }

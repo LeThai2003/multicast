@@ -570,7 +570,7 @@ public class Multicast extends javax.swing.JFrame {
                 inputPort.setText(String.valueOf(tmpGroup.getPort()));
                 buttonJoin.setEnabled(true);
             }
-//            Multicast.resetAll(new HashSet<>(tmpGroup.getUsers()));
+            Multicast.resetAll(new HashSet<>(tmpGroup.getUsersJoined()));
 //=======
 //            inputIp.setText(tmpGroup.getIP().getHostAddress());
 //            inputPort.setText(String.valueOf(tmpGroup.getPort()));
@@ -676,6 +676,7 @@ public class Multicast extends javax.swing.JFrame {
         nameGroup.setText("");
         buttonLeave.setEnabled(false);
         listModelMessage.removeAllElements();
+        resetAll(MulticastReceived.users);
         
     }//GEN-LAST:event_buttonLeaveActionPerformed
 
