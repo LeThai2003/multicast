@@ -43,41 +43,31 @@ public class MulticastReceived extends Thread {
                     if (userSender.getStatusUser() != StatusUser.INPUT) {
                         users.add(userSender);
                     }
-                    if (userSender.getStatusUser() == StatusUser.INPUT && !userSender.getUserId().equals(Login.userCurrent.getUserId())) {
+                    if (userSender.getStatusUser() == StatusUser.INPUT && !Login.userCurrent.getUserId().equals(userSender.getUserId())) {
                         Multicast.addUserModel(userSender.getUsername());
 
                         try {
-                            // Serialize User object to a byte array
+                            // Khởi tạo ByteArrayOutputStream và ObjectOutputStream
                             ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
                             ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
 
-                            // Serialize Login.userCurrent
+                            // Gửi đối tượng User (Login.userCurrent)
                             objectStream.writeObject(Login.userCurrent);
                             objectStream.flush();
                             byte[] userData = byteStream.toByteArray();
-
-                            // Create and send DatagramPacket with serialized User data
                             DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
                             socket.send(packet);
 
-                            // Serialize MulticastReceived.groupAll
-                            byteStream.reset(); // Clear the ByteArrayOutputStream for reuse
-                            objectStream.writeObject(MulticastReceived.groupAll);
-                            objectStream.flush();
-                            userData = byteStream.toByteArray();
-
-                            // Create and send DatagramPacket with serialized groupAll data
-                            packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
-                            socket.send(packet);
-
-                            // Close streams
+                            // Đóng luồng
                             objectStream.close();
                             byteStream.close();
 
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        sendGroupAll(new SetGroup(MulticastReceived.groupAll));
                     }
+
                     Multicast.reset(users.stream().filter(user -> !Objects.equals(user.getUsername(), Login.userCurrent.getUsername())).collect(Collectors.toSet()));
                 }
                 else if( receivedObject instanceof Group groupSender )
@@ -95,6 +85,34 @@ public class MulticastReceived extends Thread {
                 interrupt();
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void sendGroupAll( SetGroup setGroup) {
+        try{
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
+
+//                            // Gửi đối tượng User (Login.userCurrent)
+//                            objectStream.writeObject(Login.userCurrent);
+//                            objectStream.flush();
+//                            byte[] userData = byteStream.toByteArray();
+//                            DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
+//                            socket.send(packet);
+//
+//                            // Gửi đối tượng groupAll (được đóng gói trong SetGroup)
+//                            byteStream.reset(); // Xóa dữ liệu trong ByteArrayOutputStream để tái sử dụng
+            objectStream.writeObject(new SetGroup(MulticastReceived.groupAll));
+            objectStream.flush();
+            byte[] groupData = byteStream.toByteArray();
+            DatagramPacket packet = new DatagramPacket(groupData, groupData.length, group.getAddress(), contants.PORT);
+            socket.send(packet);
+
+            // Đóng luồng
+            objectStream.close();
+            byteStream.close();
+        }catch (IOException ex ){
+            ex.printStackTrace();
         }
     }
 
