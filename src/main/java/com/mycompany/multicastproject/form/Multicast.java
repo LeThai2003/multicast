@@ -49,34 +49,34 @@ public class Multicast extends javax.swing.JFrame {
     }
 
     private void setupButton(){
-        javax.swing.event.DocumentListener documentListener = new javax.swing.event.DocumentListener() {
-            @Override
-            public void insertUpdate(javax.swing.event.DocumentEvent e) {
-                checkButtonEnable();
-            }
-
-            @Override
-            public void removeUpdate(javax.swing.event.DocumentEvent e) {
-                checkButtonEnable();
-            }
-
-            @Override
-            public void changedUpdate(javax.swing.event.DocumentEvent e) {
-                checkButtonEnable();
-            }
-        };
-        inputIp.getDocument().addDocumentListener(documentListener);
-        inputPort.getDocument().addDocumentListener(documentListener);
+//        javax.swing.event.DocumentListener documentListener = new javax.swing.event.DocumentListener() {
+//            @Override
+//            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+//                checkButtonEnable();
+//            }
+//
+//            @Override
+//            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+//                checkButtonEnable();
+//            }
+//
+//            @Override
+//            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+//                checkButtonEnable();
+//            }
+//        };
+//        inputIp.getDocument().addDocumentListener(documentListener);
+//        inputPort.getDocument().addDocumentListener(documentListener);
     }
     
-        private void checkButtonEnable() {
-        // Kiểm tra nếu cả hai trường nhập đều không rỗng
-            boolean isInputAValid = !inputIp.getText().isBlank();
-            boolean isInputBValid = !inputPort.getText().isBlank();
-
-            // Bật nút buttonA nếu cả hai trường đều có văn bản
-            buttonJoin.setEnabled(isInputAValid && isInputBValid);
-        }
+//        private void checkButtonEnable() {
+//        // Kiểm tra nếu cả hai trường nhập đều không rỗng
+//            boolean isInputAValid = !inputIp.getText().isBlank();
+//            boolean isInputBValid = !inputPort.getText().isBlank();
+//
+//            // Bật nút buttonA nếu cả hai trường đều có văn bản
+//            buttonJoin.setEnabled(isInputAValid && isInputBValid);
+//        }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -491,14 +491,16 @@ public class Multicast extends javax.swing.JFrame {
             }, 3000); // 3000 milliseconds = 3 seconds
             return;
         }
-        System.out.println("Value"+!inputSend.isEnabled());
         try {
             Login.client.joinGroup(InetAddress.getByName(inputIp.getText()),  Integer.parseInt(inputPort.getText()), tmpGroup == null ? inputIp.getText() : tmpGroup.getNameGroup());
             inputSend.setEnabled(true);
             buttonSend.setEnabled(true);
-            System.out.println("Value"+!inputSend.isEnabled());
+            listGroup.setFocusable(false);
+            listGroup.setEnabled(false);
             buttonJoin.setEnabled(false);
             buttonLeave.setEnabled(true);
+            inputIp.setEnabled(false);
+            inputPort.setEnabled(false);
             nameGroup.setText( tmpGroup == null ? inputIp.getText() : tmpGroup.getNameGroup());
         } catch (UnknownHostException e) {
         lblGroupNotify.setText("Invalid IP address"); // Hiển thị lỗi khi địa chỉ IP không hợp lệ
@@ -533,9 +535,11 @@ public class Multicast extends javax.swing.JFrame {
         if(tmpGroup!=null){
             inputIp.setText(tmpGroup.getIP().getHostAddress());
             inputPort.setText(String.valueOf(tmpGroup.getPort()));
-            inputIp.setEnabled(false);
-            inputPort.setEnabled(false);
-            buttonJoin.setEnabled(true);
+//            inputIp.setEnabled(false);
+//            inputPort.setEnabled(false);
+            if( nameGroup.getText().isBlank() ){
+                buttonJoin.setEnabled(true);
+            }
         }
         else{
             inputIp.setEnabled(true);
@@ -590,6 +594,10 @@ public class Multicast extends javax.swing.JFrame {
         buttonJoin.setEnabled(true);
         nameGroup.setText("");
         buttonLeave.setEnabled(false);
+        listGroup.setFocusable(true);
+        listGroup.setEnabled(true);
+        inputIp.setEnabled(true);
+        inputPort.setEnabled(true);
         listModelMessage.removeAllElements();
     }//GEN-LAST:event_buttonLeaveMouseClicked
 
