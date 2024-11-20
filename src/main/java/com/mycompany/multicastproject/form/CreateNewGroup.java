@@ -296,7 +296,7 @@ public class CreateNewGroup extends javax.swing.JDialog {
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         String groupName = txtNameGroup.getText().trim();
         for(Group i:MulticastReceived.groupAll){
-            if(i.getNameGroup().contains(groupName)){
+            if(i.getNameGroup().equals(groupName)){
                 javax.swing.JOptionPane.showMessageDialog(this, "Tên nhóm đã tồn tại. Vui lòng nhập tên khác", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }

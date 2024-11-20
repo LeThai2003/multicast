@@ -79,7 +79,7 @@ public class MulticastReceived extends Thread {
                         Multicast.resetGroup(groups);
                     }
                 }else if( receivedObject instanceof SetGroup setGroup ){
-                    System.out.println(setGroup.getSetGroup());
+                    setGroup.getSetGroup().forEach( g -> MulticastReceived.groupAll.add(g) );
                 }
             } catch (Exception e) {
                 interrupt();
