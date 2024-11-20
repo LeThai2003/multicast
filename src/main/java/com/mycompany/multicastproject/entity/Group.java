@@ -2,16 +2,26 @@ package com.mycompany.multicastproject.entity;
 
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Group implements Serializable {
     private static final long serialVersionUID = 1L;
     private int port;
     private InetAddress IP;
     private String nameGroup;
-//    private List<User> users = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
     public InetAddress getIP() {
         return IP;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public void setIP(InetAddress IP) {

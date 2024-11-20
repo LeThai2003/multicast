@@ -41,8 +41,7 @@ public class MulticastReceived extends Thread {
                     if (userSender.getStatusUser() != StatusUser.INPUT) {
                         users.add(userSender);
                     }
-                    if (userSender.getStatusUser() == StatusUser.INPUT ) {
-//    && !userSender.getUserId().equals(Login.userCurrent.getUserId(
+                    if (userSender.getStatusUser() == StatusUser.INPUT &&  !userSender.getUserId().equals(Login.userCurrent.getUserId()) ) {
                         Multicast.addUserModel(userSender.getUsername());
                         // Serialize User object to a byte array
                         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
@@ -55,12 +54,14 @@ public class MulticastReceived extends Thread {
                         DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
                         socket.send(packet);
                     }
-                    Multicast.reset(users.stream().filter(user -> !Objects.equals(user.getUserId(), Login.userCurrent.getUserId())).collect(Collectors.toSet()));
+                    Multicast.reset(users.stream().filter(user -> !Objects.equals(user.getUsername(), Login.userCurrent.getUsername())).collect(Collectors.toSet()));
                 }
                 else if( receivedObject instanceof Group groupSender )
                 {
-                    groups.add(groupSender);
-                    Multicast.resetGroup(groups);
+                    if( groupSender.getUsers().contains(Login.userCurrent)){
+                        groups.add(groupSender);
+                        Multicast.resetGroup(groups);
+                    }
                 }
             } catch (Exception e) {
                 interrupt();

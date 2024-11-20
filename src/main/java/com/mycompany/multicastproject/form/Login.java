@@ -8,12 +8,15 @@ import com.mycompany.multicastproject.MulticastProject;
 import com.mycompany.multicastproject.entity.StatusUser;
 import com.mycompany.multicastproject.entity.User;
 import com.mycompany.multicastproject.model.Client;
+import com.mycompany.multicastproject.model.MulticastReceived;
+
 import java.awt.event.KeyEvent;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -125,6 +128,7 @@ public class Login extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if( this.inputName.getText().isBlank()){
+            JOptionPane.showMessageDialog(this,"Tên người dùng không hợp lệ.\nVui lòng nhập lại");
             System.out.println(this.inputName);
         }
         else{
@@ -132,6 +136,12 @@ public class Login extends javax.swing.JFrame {
                 InetAddress localHost = InetAddress.getLocalHost();
                 String ipAddress = localHost.getHostAddress();
                 Login.userCurrent.setUsername(this.inputName.getText());
+
+                if(MulticastReceived.users.stream().anyMatch( u -> u.getUsername().equals(Login.userCurrent.getUsername()))){
+                    JOptionPane.showMessageDialog(this,"Tên người dùng đã tồn tại.\nVui lòng nhập lại");
+                    return;
+                }
+
                 Login.userCurrent.setStatusUser(StatusUser.INPUT);
                 Login.userCurrent.setUserId(ipAddress);
                 client.login(this.inputName.getText());
