@@ -578,7 +578,7 @@ public class Multicast extends javax.swing.JFrame {
 ////            inputIp.setEnabled(false);
 ////            inputPort.setEnabled(false);
 //            if( nameGroup.getText().isBlank() ){
-//                buttonJoin.setEnabled(true);
+//                buttonJoin.setEnabled(true);a
 //            }
 //            
 //>>>>>>> 4d8e7926b13e8f7d2d438c2630f1cea226ef795c
@@ -586,19 +586,20 @@ public class Multicast extends javax.swing.JFrame {
     }//GEN-LAST:event_listGroupMouseClicked
 
     private void inputSendKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputSendKeyPressed
+        
         if(evt.getKeyCode() == KeyEvent.VK_ENTER){
             evt.consume();
-            if(inputSend.getText().isEmpty()){
+            if(!inputSend.getText().isEmpty()){
                 buttonSendActionPerformed(null); 
+            }else{
                 lblSendNotify.setText("Please, enter text!");
-                
                 Timer timer = new Timer();
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
                         lblSendNotify.setText(null); // Xóa thông báo sau 3 giây
                     }
-                }, 3000); // 3000 milliseconds = 3 seconds
+                }, 2000); // 3000 milliseconds = 3 seconds
             }
         }
     }//GEN-LAST:event_inputSendKeyPressed

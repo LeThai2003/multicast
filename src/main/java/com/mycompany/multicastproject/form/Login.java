@@ -157,19 +157,16 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_inputNameActionPerformed
 
     private void inputNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputNameKeyPressed
+//        if( this.inputName.getText().isBlank()){
+//            JOptionPane.showMessageDialog(this,"Tên người dùng không hợp lệ.\nVui lòng nhập lại");
+//            System.out.println(this.inputName);
+//        }
         if(evt.getKeyCode() == KeyEvent.VK_ENTER){
             evt.consume();
-            if(!inputName.getText().isEmpty()){
+            if(!inputName.getText().isBlank()){
                 jButton1ActionPerformed(null); 
-//                lblSendNotify.setText("Please, enter text!");
-//                
-//                Timer timer = new Timer();
-//                timer.schedule(new TimerTask() {
-//                    @Override
-//                    public void run() {
-//                        lblSendNotify.setText(null); // Xóa thông báo sau 3 giây
-//                    }
-//                }, 3000); // 3000 milliseconds = 3 seconds
+            }else{
+                JOptionPane.showMessageDialog(this,"Tên người dùng không hợp lệ.\nVui lòng nhập lại");
             }
         }
     }//GEN-LAST:event_inputNameKeyPressed
