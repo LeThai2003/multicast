@@ -18,7 +18,7 @@ public class MulticastReceived extends Thread {
     private final MulticastSocket socket;
     private final InetSocketAddress group;
     public static Set<User> users = new HashSet<>();
-    public final Set<Group> groups = new HashSet<>();
+    public static Set<Group> groups = new HashSet<>();
 
     public MulticastReceived(MulticastSocket socket) throws UnknownHostException {
        this.socket = socket;

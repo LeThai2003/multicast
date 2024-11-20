@@ -631,6 +631,9 @@ public class Multicast extends javax.swing.JFrame {
     public static void addMessage (Message message){
         listModelMessage.addElement(message.toString());
     }
+    public static void addMessage (String message){
+        listModelMessage.addElement(message);
+    }
     public static void addMessageIntoGroup ( String message  ){
         listModelMessage.addElement(message);
     }
