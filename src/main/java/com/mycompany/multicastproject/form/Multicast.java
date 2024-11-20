@@ -75,7 +75,7 @@ public class Multicast extends javax.swing.JFrame {
             boolean isInputBValid = !inputPort.getText().isBlank();
 
             // Bật nút buttonA nếu cả hai trường đều có văn bản
-            buttonJoin.setEnabled(isInputAValid && isInputBValid && !listModelGroup.isEmpty());
+            buttonJoin.setEnabled(isInputAValid && isInputBValid);
         }
 
     /**
@@ -126,6 +126,11 @@ public class Multicast extends javax.swing.JFrame {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Groups");
 
+        listGroup.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                listGroupFocusLost(evt);
+            }
+        });
         listGroup.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 listGroupMouseClicked(evt);
@@ -140,6 +145,11 @@ public class Multicast extends javax.swing.JFrame {
         jLabel3.setText("Input IP:");
 
         inputIp.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        inputIp.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                inputIpMouseClicked(evt);
+            }
+        });
         inputIp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inputIpActionPerformed(evt);
@@ -150,6 +160,11 @@ public class Multicast extends javax.swing.JFrame {
         jLabel7.setText("Input Port:");
 
         inputPort.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        inputPort.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                inputPortMouseClicked(evt);
+            }
+        });
         inputPort.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inputPortActionPerformed(evt);
@@ -464,7 +479,6 @@ public class Multicast extends javax.swing.JFrame {
     private void buttonJoinActionPerformed(java.awt.event.ActionEvent evt){//GEN-FIRST:event_buttonJoinActionPerformed
         listGroup.setEnabled(true);
         Group tmpGroup = listGroup.getSelectedValue();
-        
         if( inputPort.getText().isBlank() || inputIp.getText().isBlank() ){
             lblGroupNotify.setText("IP and Port can't empty");
             // Tạo một Timer để đặt lại memo sau 3 giây
@@ -580,6 +594,24 @@ public class Multicast extends javax.swing.JFrame {
     private void listGroupMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listGroupMousePressed
         // TODO add your handling code here:
     }//GEN-LAST:event_listGroupMousePressed
+
+    private void listGroupFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listGroupFocusLost
+        inputIp.setEnabled(true);
+        inputPort.setEnabled(true);
+        buttonJoin.setEnabled(false);
+    }//GEN-LAST:event_listGroupFocusLost
+
+    private void inputIpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inputIpMouseClicked
+        if(!inputIp.getText().isBlank()&&!inputPort.getText().isBlank()&&!buttonJoin.isEnabled()){
+            buttonJoin.setEnabled(true);
+        }
+    }//GEN-LAST:event_inputIpMouseClicked
+
+    private void inputPortMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inputPortMouseClicked
+               if(!inputIp.getText().isBlank()&&!inputPort.getText().isBlank()&&!buttonJoin.isEnabled()){
+            buttonJoin.setEnabled(true);
+        }
+    }//GEN-LAST:event_inputPortMouseClicked
 
     public static void addMessage (Message message){
         listModelMessage.addElement(message.toString());
