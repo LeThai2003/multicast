@@ -75,7 +75,7 @@ public class Client implements IClient {
             groupTemp.setNameGroup(groupName);
             groupTemp.setIP(ipGroup);
 
-            messageReceived = new MessageReceived(sender, groupTemp);
+            messageReceived = new MessageReceived(sender);
             messageReceived.start();
             // infomation send
             JoinGroup joinGroup = new JoinGroup(groupTemp, Login.userCurrent);
@@ -164,7 +164,6 @@ public class Client implements IClient {
             if( messageReceived != null && messageReceived.isAlive()){
                 messageReceived.interrupt();
             }
-            messageReceived.setGroup(new Group());
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -526,6 +526,7 @@ public class Multicast extends javax.swing.JFrame {
             inputSend.setEnabled(true);
             buttonSend.setEnabled(true);
             setGroupEnabled(false);
+            System.out.println("Join success");
 //            listGroup.setFocusable(false);
 //            listGroup.setEnabled(false);
 //            buttonJoin.setEnabled(false);
@@ -713,6 +714,7 @@ public class Multicast extends javax.swing.JFrame {
     }
     public static void resetAll(Set<User> userSet){
         listModelUser.removeAllElements();
+        if( userSet == null ) return;
         userSet.forEach(user -> {
             if( !listModelUser.contains(user.getUsername())){
                 addUserModel(user.getUsername());

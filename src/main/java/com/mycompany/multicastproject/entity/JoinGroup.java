@@ -27,4 +27,12 @@ public class JoinGroup implements Serializable {
     public void setUser(User user) {
         this.user = user;
     }
+
+    @Override
+    public String toString() {
+        return "JoinGroup{" +
+                "group=" + group +
+                ", user=" + user +
+                '}';
+    }
 }

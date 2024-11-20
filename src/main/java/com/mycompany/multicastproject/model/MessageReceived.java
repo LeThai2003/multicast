@@ -19,21 +19,11 @@ import java.util.Optional;
 public class MessageReceived extends Thread {
     private final MulticastSocket socket;
     private List<Message> messageList;
-    private Group groupJoin;
 
-    public MessageReceived( MulticastSocket socket, Group group ) {
+    public MessageReceived( MulticastSocket socket ) {
         this.socket = socket;
-        this.groupJoin = group;
         this.messageList = new ArrayList<>();
     }
-
-    public Group getGroup() {
-        return groupJoin;
-    }
-    public void setGroup( Group group ) {
-        this.groupJoin = group;
-    }
-
     @Override
     public void run() {
         try {
@@ -58,9 +48,8 @@ public class MessageReceived extends Thread {
                         Message message = new Message(joinGroup.getUser().getUsername() + " into group", LocalTime.now(),joinGroup.getUser());
                         messageList.add(message);
                         Multicast.addMessage(message);
-                        if( groupJoin != null && groupJoin.getIP().equals(joinGroup.getGroup().getIP()) ){
-                            Multicast.resetAll( new HashSet<>(group.get().getUsersJoined()));
-                        }
+                        System.out.println(joinGroup.toString());
+                        Multicast.resetAll( new HashSet<>(group.get().getUsersJoined()));
                     }
                 }
             }
