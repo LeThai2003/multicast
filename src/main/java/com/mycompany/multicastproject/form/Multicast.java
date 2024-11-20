@@ -491,10 +491,12 @@ public class Multicast extends javax.swing.JFrame {
             }, 3000); // 3000 milliseconds = 3 seconds
             return;
         }
+        System.out.println("Value"+!inputSend.isEnabled());
         try {
             Login.client.joinGroup(InetAddress.getByName(inputIp.getText()),  Integer.parseInt(inputPort.getText()), tmpGroup == null ? inputIp.getText() : tmpGroup.getNameGroup());
             inputSend.setEnabled(true);
             buttonSend.setEnabled(true);
+            System.out.println("Value"+!inputSend.isEnabled());
             buttonJoin.setEnabled(false);
             buttonLeave.setEnabled(true);
             nameGroup.setText( tmpGroup == null ? inputIp.getText() : tmpGroup.getNameGroup());
@@ -597,7 +599,7 @@ public class Multicast extends javax.swing.JFrame {
     private void listGroupFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listGroupFocusLost
         inputIp.setEnabled(true);
         inputPort.setEnabled(true);
-        buttonJoin.setEnabled(false);
+//        checkButtonEnable();
     }//GEN-LAST:event_listGroupFocusLost
 
     private void inputIpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inputIpMouseClicked
