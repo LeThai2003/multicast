@@ -3,10 +3,7 @@ package com.mycompany.multicastproject.model;
 import com.mycompany.multicastproject.Contants.contants;
 import com.mycompany.multicastproject.MulticastProject;
 import com.mycompany.multicastproject.astract.IClient;
-import com.mycompany.multicastproject.entity.Group;
-import com.mycompany.multicastproject.entity.Message;
-import com.mycompany.multicastproject.entity.StatusUser;
-import com.mycompany.multicastproject.entity.User;
+import com.mycompany.multicastproject.entity.*;
 import com.mycompany.multicastproject.form.Login;
 import com.mycompany.multicastproject.form.Multicast;
 
@@ -73,20 +70,31 @@ public class Client implements IClient {
             NetworkInterface netIf = NetworkInterface.getByName(contants.NETWORK_INTERFACE);
             group = new InetSocketAddress(ipGroup, port);
             this.sender.joinGroup(group, netIf);
+            Group groupTemp = new Group();
+            groupTemp.setPort(port);
+            groupTemp.setNameGroup(groupName);
+            groupTemp.setIP(ipGroup);
+
             messageReceived = new MessageReceived(sender);
             messageReceived.start();
-            sendMessage(Login.userCurrent.getUsername() + " into group");
-//            sender.leaveGroup(ipGroup);
-            // Gửi tin nhắn từ người dùng đến nhóm
-//            System.out.println("Nhập tin nhắn để gửi, gõ 'exit' để thoát.");
-//            String message;
-//            while (!(message = scanner.nextLine()).equalsIgnoreCase("exit")) {
-//                sendMessage(newSocket, ipGroup, port, message);
-//            }
-//
-//            newSocket.leaveGroup(ipGroup);
-//            newSocket.close();
-//            System.out.println("Đã rời khỏi nhóm " + groupName);
+            // infomation send
+            JoinGroup joinGroup = new JoinGroup(groupTemp, Login.userCurrent);
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(byteStream); // Corrected this line
+
+            // Write the Group object to the ObjectOutputStream
+            oos.writeObject(joinGroup);
+            oos.flush();
+
+            // Get the byte array from the ByteArrayOutputStream
+            byte[] userData = byteStream.toByteArray();
+
+            // Create DatagramPacket with serialized User data
+            DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
+            sender.send(packet);
+            // Close the streams after use
+            oos.close(); // Close ObjectOutputStream
+            byteStream.close(); // Close ByteArrayOutputStream
             
         }catch ( Exception e ){
             // xoa nhom khi out het
@@ -138,7 +146,6 @@ public class Client implements IClient {
             // Create DatagramPacket with serialized User data
             DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
             sender.send(packet);
-            System.out.println("Client 141 : send group");
             // Close the streams after use
             oos.close(); // Close ObjectOutputStream
             byteStream.close(); // Close ByteArrayOutputStream
@@ -152,6 +159,7 @@ public class Client implements IClient {
         try{
             sendMessage(Login.userCurrent.getUsername() + " leave group");
             NetworkInterface netIf = NetworkInterface.getByName(contants.NETWORK_INTERFACE);
+
             sender.leaveGroup(group, netIf); // Rời khỏi nhóm multicast
             if( messageReceived != null && messageReceived.isAlive()){
                 messageReceived.interrupt();

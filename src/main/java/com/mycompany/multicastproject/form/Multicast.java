@@ -526,6 +526,7 @@ public class Multicast extends javax.swing.JFrame {
             inputSend.setEnabled(true);
             buttonSend.setEnabled(true);
             setGroupEnabled(false);
+            System.out.println("Join success");
 //            listGroup.setFocusable(false);
 //            listGroup.setEnabled(false);
 //            buttonJoin.setEnabled(false);
@@ -570,7 +571,7 @@ public class Multicast extends javax.swing.JFrame {
                 inputPort.setText(String.valueOf(tmpGroup.getPort()));
                 buttonJoin.setEnabled(true);
             }
-//            Multicast.resetAll(new HashSet<>(tmpGroup.getUsers()));
+            Multicast.resetAll(new HashSet<>(tmpGroup.getUsersJoined()));
 //=======
 //            inputIp.setText(tmpGroup.getIP().getHostAddress());
 //            inputPort.setText(String.valueOf(tmpGroup.getPort()));
@@ -676,11 +677,15 @@ public class Multicast extends javax.swing.JFrame {
         nameGroup.setText("");
         buttonLeave.setEnabled(false);
         listModelMessage.removeAllElements();
+        resetAll(MulticastReceived.users);
         
     }//GEN-LAST:event_buttonLeaveActionPerformed
 
     public static void addMessage (Message message){
         listModelMessage.addElement(message.toString());
+    }
+    public static void addMessage (String message){
+        listModelMessage.addElement(message);
     }
     public static void addMessageIntoGroup ( String message  ){
         listModelMessage.addElement(message);
@@ -709,6 +714,7 @@ public class Multicast extends javax.swing.JFrame {
     }
     public static void resetAll(Set<User> userSet){
         listModelUser.removeAllElements();
+        if( userSet == null ) return;
         userSet.forEach(user -> {
             if( !listModelUser.contains(user.getUsername())){
                 addUserModel(user.getUsername());

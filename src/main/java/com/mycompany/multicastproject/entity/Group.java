@@ -11,6 +11,7 @@ public class Group implements Serializable {
     private InetAddress IP;
     private String nameGroup;
     private List<User> users = new ArrayList<>();
+    private List<User> usersJoined = new ArrayList<>();
 
     public InetAddress getIP() {
         return IP;
@@ -42,6 +43,14 @@ public class Group implements Serializable {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public List<User> getUsersJoined() {
+        return usersJoined;
+    }
+
+    public void setUsersJoined(List<User> usersJoined) {
+        this.usersJoined = usersJoined;
     }
 
     @Override
