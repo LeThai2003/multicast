@@ -7,9 +7,11 @@ package com.mycompany.multicastproject.form;
 import com.mycompany.multicastproject.entity.Group;
 import com.mycompany.multicastproject.entity.Message;
 import com.mycompany.multicastproject.entity.User;
+import com.mycompany.multicastproject.model.MulticastReceived;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashSet;
 import java.util.Set;
 import javax.swing.DefaultListModel;
 import java.awt.event.KeyEvent;
@@ -540,6 +542,7 @@ public class Multicast extends javax.swing.JFrame {
             if( nameGroup.getText().isBlank() ){
                 buttonJoin.setEnabled(true);
             }
+            Multicast.resetAll(new HashSet<>(tmpGroup.getUsers()));
         }
         else{
             inputIp.setEnabled(true);
@@ -609,6 +612,8 @@ public class Multicast extends javax.swing.JFrame {
         inputIp.setEnabled(true);
         inputPort.setEnabled(true);
 //        checkButtonEnable();
+        listGroup.clearSelection();
+        Multicast.resetAll(MulticastReceived.users);
     }//GEN-LAST:event_listGroupFocusLost
 
     private void inputIpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inputIpMouseClicked
@@ -645,6 +650,14 @@ public class Multicast extends javax.swing.JFrame {
         listModelUser.addElement(name);
     }
     public static void reset(Set<User> userSet){
+        userSet.forEach(user -> {
+            if( !listModelUser.contains(user.getUsername())){
+                addUserModel(user.getUsername());
+            }
+        });
+    }
+    public static void resetAll(Set<User> userSet){
+        listModelUser.removeAllElements();
         userSet.forEach(user -> {
             if( !listModelUser.contains(user.getUsername())){
                 addUserModel(user.getUsername());
