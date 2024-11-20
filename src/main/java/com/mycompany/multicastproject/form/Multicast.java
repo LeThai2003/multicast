@@ -7,9 +7,11 @@ package com.mycompany.multicastproject.form;
 import com.mycompany.multicastproject.entity.Group;
 import com.mycompany.multicastproject.entity.Message;
 import com.mycompany.multicastproject.entity.User;
+import com.mycompany.multicastproject.model.MulticastReceived;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashSet;
 import java.util.Set;
 import javax.swing.DefaultListModel;
 import java.awt.event.KeyEvent;
@@ -84,6 +86,7 @@ public class Multicast extends javax.swing.JFrame {
             if(nameGroup.getText().isBlank())
                 buttonJoin.setEnabled(isInputAValid && isInputBValid);
         }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -324,14 +327,17 @@ public class Multicast extends javax.swing.JFrame {
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(118, 118, 118)
+                .addContainerGap(103, Short.MAX_VALUE)
                 .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
+                .addContainerGap(103, Short.MAX_VALUE))
             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblUserNotify, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4)
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -515,15 +521,17 @@ public class Multicast extends javax.swing.JFrame {
             }, 3000); // 3000 milliseconds = 3 seconds
             return;
         }
-        System.out.println("Value"+!inputSend.isEnabled());
         try {
             Login.client.joinGroup(InetAddress.getByName(inputIp.getText()),  Integer.parseInt(inputPort.getText()), tmpGroup == null ? inputIp.getText() : tmpGroup.getNameGroup());
             inputSend.setEnabled(true);
             buttonSend.setEnabled(true);
-            System.out.println("Value"+!inputSend.isEnabled());
             setGroupEnabled(false);
-            buttonJoin.setEnabled(false);
+//            listGroup.setFocusable(false);
+//            listGroup.setEnabled(false);
+//            buttonJoin.setEnabled(false);
             buttonLeave.setEnabled(true);
+//            inputIp.setEnabled(false);
+//            inputPort.setEnabled(false);
             nameGroup.setText( tmpGroup == null ? inputIp.getText() : tmpGroup.getNameGroup());
         } catch (UnknownHostException e) {
         lblGroupNotify.setText("Invalid IP address"); // Hiển thị lỗi khi địa chỉ IP không hợp lệ
@@ -556,11 +564,23 @@ public class Multicast extends javax.swing.JFrame {
     private void listGroupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listGroupMouseClicked
         Group tmpGroup = listGroup.getSelectedValue();
         if(tmpGroup!=null){
+//<<<<<<< HEAD
             if(listGroup.isEnabled()){// nguoi dung chua tham gia group nao
                 inputIp.setText(tmpGroup.getIP().getHostAddress());
                 inputPort.setText(String.valueOf(tmpGroup.getPort()));
                 buttonJoin.setEnabled(true);
             }
+//            Multicast.resetAll(new HashSet<>(tmpGroup.getUsers()));
+//=======
+//            inputIp.setText(tmpGroup.getIP().getHostAddress());
+//            inputPort.setText(String.valueOf(tmpGroup.getPort()));
+////            inputIp.setEnabled(false);
+////            inputPort.setEnabled(false);
+//            if( nameGroup.getText().isBlank() ){
+//                buttonJoin.setEnabled(true);
+//            }
+//            
+//>>>>>>> 4d8e7926b13e8f7d2d438c2630f1cea226ef795c
         }
     }//GEN-LAST:event_listGroupMouseClicked
 
@@ -602,7 +622,22 @@ public class Multicast extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonSendActionPerformed
 
     private void buttonLeaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonLeaveMouseClicked
-
+//<<<<<<< HEAD
+//
+//=======
+//        Login.client.leaveGroup();
+//        listGroup.setEnabled(false);
+//        inputSend.setEnabled(false);
+//        buttonSend.setEnabled(false);
+//        buttonJoin.setEnabled(true);
+//        nameGroup.setText("");
+//        buttonLeave.setEnabled(false);
+//        listGroup.setFocusable(true);
+//        listGroup.setEnabled(true);
+//        inputIp.setEnabled(true);
+//        inputPort.setEnabled(true);
+//        listModelMessage.removeAllElements();
+////>>>>>>> 4d8e7926b13e8f7d2d438c2630f1cea226ef795c
     }//GEN-LAST:event_buttonLeaveMouseClicked
 
     private void listGroupMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listGroupMousePressed
@@ -612,6 +647,8 @@ public class Multicast extends javax.swing.JFrame {
     private void listGroupFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listGroupFocusLost
         listGroup.clearSelection();
 //        checkButtonEnable();
+        listGroup.clearSelection();
+        Multicast.resetAll(MulticastReceived.users);
     }//GEN-LAST:event_listGroupFocusLost
 
     private void inputIpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inputIpMouseClicked
@@ -639,6 +676,7 @@ public class Multicast extends javax.swing.JFrame {
         nameGroup.setText("");
         buttonLeave.setEnabled(false);
         listModelMessage.removeAllElements();
+        
     }//GEN-LAST:event_buttonLeaveActionPerformed
 
     public static void addMessage (Message message){
@@ -663,6 +701,14 @@ public class Multicast extends javax.swing.JFrame {
         listModelUser.addElement(name);
     }
     public static void reset(Set<User> userSet){
+        userSet.forEach(user -> {
+            if( !listModelUser.contains(user.getUsername())){
+                addUserModel(user.getUsername());
+            }
+        });
+    }
+    public static void resetAll(Set<User> userSet){
+        listModelUser.removeAllElements();
         userSet.forEach(user -> {
             if( !listModelUser.contains(user.getUsername())){
                 addUserModel(user.getUsername());
