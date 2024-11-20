@@ -8,6 +8,8 @@ import com.mycompany.multicastproject.MulticastProject;
 import com.mycompany.multicastproject.entity.StatusUser;
 import com.mycompany.multicastproject.entity.User;
 import com.mycompany.multicastproject.model.Client;
+import com.mycompany.multicastproject.model.MulticastReceived;
+
 import java.awt.event.KeyEvent;
 
 import java.io.IOException;
@@ -132,6 +134,12 @@ public class Login extends javax.swing.JFrame {
                 InetAddress localHost = InetAddress.getLocalHost();
                 String ipAddress = localHost.getHostAddress();
                 Login.userCurrent.setUsername(this.inputName.getText());
+
+                if(MulticastReceived.users.stream().anyMatch( u -> u.getUsername().equals(Login.userCurrent.getUsername()))){
+                    // trung thi thong bao
+                    return;
+                }
+
                 Login.userCurrent.setStatusUser(StatusUser.INPUT);
                 Login.userCurrent.setUserId(ipAddress);
                 client.login(this.inputName.getText());
