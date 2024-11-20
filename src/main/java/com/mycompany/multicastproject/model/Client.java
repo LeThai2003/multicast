@@ -4,6 +4,7 @@ import com.mycompany.multicastproject.Contants.contants;
 import com.mycompany.multicastproject.MulticastProject;
 import com.mycompany.multicastproject.astract.IClient;
 import com.mycompany.multicastproject.entity.*;
+import com.mycompany.multicastproject.form.EStatusJoin;
 import com.mycompany.multicastproject.form.Login;
 import com.mycompany.multicastproject.form.Multicast;
 
@@ -78,7 +79,7 @@ public class Client implements IClient {
             messageReceived = new MessageReceived(sender);
             messageReceived.start();
             // infomation send
-            JoinGroup joinGroup = new JoinGroup(groupTemp, Login.userCurrent);
+            JoinGroup joinGroup = new JoinGroup( EStatusJoin.JOIN, groupTemp, Login.userCurrent);
             ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(byteStream); // Corrected this line
 

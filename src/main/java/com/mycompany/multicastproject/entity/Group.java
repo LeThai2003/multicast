@@ -3,7 +3,9 @@ package com.mycompany.multicastproject.entity;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Group implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -11,7 +13,7 @@ public class Group implements Serializable {
     private InetAddress IP;
     private String nameGroup;
     private List<User> users = new ArrayList<>();
-    private List<User> usersJoined = new ArrayList<>();
+    private Set<User> usersJoined = new HashSet<>();
 
     public InetAddress getIP() {
         return IP;
@@ -45,11 +47,11 @@ public class Group implements Serializable {
         this.port = port;
     }
 
-    public List<User> getUsersJoined() {
+    public Set<User> getUsersJoined() {
         return usersJoined;
     }
 
-    public void setUsersJoined(List<User> usersJoined) {
+    public void setUsersJoined(Set<User> usersJoined) {
         this.usersJoined = usersJoined;
     }
 
