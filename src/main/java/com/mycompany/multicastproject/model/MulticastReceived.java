@@ -59,9 +59,7 @@ public class MulticastReceived extends Thread {
                 }
                 else if( receivedObject instanceof Group groupSender )
                 {
-                    if( !groupAll.stream().anyMatch( g -> g.getIP().equals(groupSender.getIP()) )){
-                        groupAll.add(groupSender);
-                    }
+                    groupAll.add(groupSender);
                     if( groupSender.getUsers().contains(Login.userCurrent)){
                         groups.add(groupSender);
                         Multicast.resetGroup(groups);
