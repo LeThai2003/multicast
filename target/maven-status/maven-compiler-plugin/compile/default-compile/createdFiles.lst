@@ -38,6 +38,7 @@ com\mycompany\multicastproject\form\Multicast$5.class
 com\mycompany\multicastproject\form\CreateNewGroup.class
 com\mycompany\multicastproject\form\Multicast$4.class
 com\mycompany\multicastproject\form\Multicast$17.class
+com\mycompany\multicastproject\form\Multicast$22.class
 com\mycompany\multicastproject\model\MulticastSender.class
 com\mycompany\multicastproject\form\Login.class
 com\mycompany\multicastproject\model\Client.class
