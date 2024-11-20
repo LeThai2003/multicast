@@ -120,7 +120,7 @@ public class Client implements IClient {
             // Create DatagramPacket with serialized User data
             DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
             socket.send(packet);
-
+            System.out.println("send create group");
             // Close the streams after use
             oos.close(); // Close ObjectOutputStream
             byteStream.close(); // Close ByteArrayOutputStream

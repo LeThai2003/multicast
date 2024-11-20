@@ -68,6 +68,10 @@ public class MessageReceived extends Thread {
                         oos.close(); // Close ObjectOutputStream
                         byteStream.close(); // Close ByteArrayOutputStream
                     }
+                    if( joinGroup.geteStatusJoin().equals(EStatusJoin.ACTIVE) ){
+                        group.get().getUsersJoined().add(joinGroup.getUser());
+                        Multicast.resetAll( new HashSet<>(group.get().getUsersJoined()));
+                    }
                     System.out.println(joinGroup.geteStatusJoin().equals(EStatusJoin.JOIN));
                     if( group.isPresent() && joinGroup.geteStatusJoin().equals(EStatusJoin.JOIN)){
                         group.get().getUsersJoined().add(joinGroup.getUser());

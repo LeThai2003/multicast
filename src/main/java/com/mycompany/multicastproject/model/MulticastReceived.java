@@ -2,6 +2,7 @@ package com.mycompany.multicastproject.model;
 
 import com.mycompany.multicastproject.Contants.contants;
 import com.mycompany.multicastproject.entity.Group;
+import com.mycompany.multicastproject.entity.SetGroup;
 import com.mycompany.multicastproject.entity.StatusUser;
 import com.mycompany.multicastproject.entity.User;
 import com.mycompany.multicastproject.form.Login;
@@ -54,18 +55,28 @@ public class MulticastReceived extends Thread {
                         // Create DatagramPacket with serialized User data
                         DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
                         socket.send(packet);
+
+                        //send set group
+                        objectStream.writeObject(MulticastReceived.groupAll);
+                        objectStream.flush();
+                        // Create DatagramPacket with serialized User data
+                        packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
+                        socket.send(packet);
+                        objectStream.close();
+                        byteStream.close();
                     }
                     Multicast.reset(users.stream().filter(user -> !Objects.equals(user.getUsername(), Login.userCurrent.getUsername())).collect(Collectors.toSet()));
                 }
                 else if( receivedObject instanceof Group groupSender )
                 {
-
+                    System.out.println("Recei group new");
                     groupAll.add(groupSender);
-
                     if( groupSender.getUsers().contains(Login.userCurrent)){
                         groups.add(groupSender);
                         Multicast.resetGroup(groups);
                     }
+                }else if( receivedObject instanceof SetGroup setGroup ){
+                    System.out.println(setGroup.getSetGroup());
                 }
             } catch (Exception e) {
                 interrupt();

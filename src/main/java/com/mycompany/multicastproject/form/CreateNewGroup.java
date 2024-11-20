@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -293,11 +294,19 @@ public class CreateNewGroup extends javax.swing.JDialog {
 
     
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+        String groupName = txtNameGroup.getText().trim();
+        for(Group i:MulticastReceived.groupAll){
+            if(i.getNameGroup().contains(groupName)){
+                javax.swing.JOptionPane.showMessageDialog(this, "Tên nhóm đã tồn tại. Vui lòng nhập tên khác", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
         group.setNameGroup(txtNameGroup.getText());
         group.setIP(createGroupIP());
         group.setPort(contants.PORT);
         group.setUsers(MulticastReceived.users.stream().filter( user -> listUserJoined.contains(user.getUsername())).toList());
         this.dispose();
+        
 //        System.out.println(group);
     }//GEN-LAST:event_btnCreateActionPerformed
 
