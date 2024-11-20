@@ -462,7 +462,7 @@ public class Multicast extends javax.swing.JFrame {
     }//GEN-LAST:event_nameGroupActionPerformed
 
     private void buttonJoinActionPerformed(java.awt.event.ActionEvent evt){//GEN-FIRST:event_buttonJoinActionPerformed
-
+        listGroup.setEnabled(true);
         Group tmpGroup = listGroup.getSelectedValue();
         
         if( inputPort.getText().isBlank() || inputIp.getText().isBlank() ){
@@ -568,6 +568,7 @@ public class Multicast extends javax.swing.JFrame {
 
     private void buttonLeaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonLeaveMouseClicked
         Login.client.leaveGroup();
+        listGroup.setEnabled(false);
         inputSend.setEnabled(false);
         buttonSend.setEnabled(false);
         buttonJoin.setEnabled(true);

@@ -39,31 +39,33 @@ public class Client implements IClient {
     @Override
     public void login(String name) {
         String username = name;
-        try{
-            group = new InetSocketAddress(InetAddress.getByName(contants.MULTICAST_ADDRESS), contants.PORT);
-            NetworkInterface netIf = NetworkInterface.getByName(contants.NETWORK_INTERFACE);
-            this.socket.joinGroup(group, netIf);
-
-
-            // Serialize User object to a byte array
-            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-            ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
-            objectStream.writeObject(Login.userCurrent);
-            objectStream.flush();
-            byte[] userData = byteStream.toByteArray();
-
-            // Create DatagramPacket with serialized User data
-            DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
-            socket.send(packet);
-            Login.userCurrent.setStatusUser(StatusUser.ACTIVE);
-            MulticastProject.name = name;
-            Multicast mul = new Multicast();
-            mul.setName(MulticastProject.name);
-            mul.setLocationRelativeTo(null);
-            mul.setVisible(true);
-        }catch ( Exception e ){
-            e.printStackTrace();
-        }
+        System.out.println(MulticastReceived.users.stream().anyMatch( u -> u.getUsername().equals(username)));
+        return;
+//        try{
+//            group = new InetSocketAddress(InetAddress.getByName(contants.MULTICAST_ADDRESS), contants.PORT);
+//            NetworkInterface netIf = NetworkInterface.getByName(contants.NETWORK_INTERFACE);
+//            this.socket.joinGroup(group, netIf);
+//
+//
+//            // Serialize User object to a byte array
+//            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+//            ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
+//            objectStream.writeObject(Login.userCurrent);
+//            objectStream.flush();
+//            byte[] userData = byteStream.toByteArray();
+//
+//            // Create DatagramPacket with serialized User data
+//            DatagramPacket packet = new DatagramPacket(userData, userData.length, group.getAddress(), contants.PORT);
+//            socket.send(packet);
+//            Login.userCurrent.setStatusUser(StatusUser.ACTIVE);
+//            MulticastProject.name = name;
+//            Multicast mul = new Multicast();
+//            mul.setName(MulticastProject.name);
+//            mul.setLocationRelativeTo(null);
+//            mul.setVisible(true);
+//        }catch ( Exception e ){
+//            e.printStackTrace();
+//        }
     }
 
     @Override

@@ -95,10 +95,8 @@ public class CreateNewGroup extends javax.swing.JDialog {
     
     
     private void checkButtonEnable() {
-        // Kiểm tra nếu cả hai trường nhập đều không rỗng
-        boolean isInputAValid = !txtNameGroup.getText().isBlank();
         // Bật nút buttonA nếu cả hai trường đều có văn bản
-        btnCreate.setEnabled(isInputAValid && !listUserJoined.isEmpty());
+        btnCreate.setEnabled(!txtNameGroup.getText().isBlank());
     }
     /**
      * This method is called from within the constructor to initialize the form.

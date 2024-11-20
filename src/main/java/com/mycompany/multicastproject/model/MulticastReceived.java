@@ -41,8 +41,7 @@ public class MulticastReceived extends Thread {
                     if (userSender.getStatusUser() != StatusUser.INPUT) {
                         users.add(userSender);
                     }
-                    if (userSender.getStatusUser() == StatusUser.INPUT && !userSender.getUsername().equals(Login.userCurrent.getUsername())) {
-//    && !userSender.getUserId().equals(Login.userCurrent.getUserId(
+                    if (userSender.getStatusUser() == StatusUser.INPUT &&  !userSender.getUserId().equals(Login.userCurrent.getUserId()) ) {
                         Multicast.addUserModel(userSender.getUsername());
                         // Serialize User object to a byte array
                         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
