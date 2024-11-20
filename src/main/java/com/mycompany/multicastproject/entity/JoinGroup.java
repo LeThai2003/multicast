@@ -43,8 +43,9 @@ public class JoinGroup implements Serializable {
     @Override
     public String toString() {
         return "JoinGroup{" +
-                "group=" + group +
+                "eStatusJoin=" + eStatusJoin +
                 ", user=" + user +
+                ", group=" + group +
                 '}';
     }
 }
