@@ -550,8 +550,12 @@ public class Multicast extends javax.swing.JFrame {
         newGroup.setVisible(true);
         
         Group returnedGroup = newGroup.getGroup();
-        listModelGroup.addElement(returnedGroup);
-        Login.client.sendCreateGroup(returnedGroup);
+//        System.out.println("group: " + returnedGroup);
+        if(returnedGroup != null)
+        {
+            listModelGroup.addElement(returnedGroup);
+            Login.client.sendCreateGroup(returnedGroup);
+        }
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void listUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listUserMouseClicked

@@ -21,6 +21,8 @@ public class MulticastReceived extends Thread {
     public static Set<User> users = new HashSet<>();
     public static Set<Group> groups = new HashSet<>();
     public static Set<Group> groupAll = new HashSet<>();
+    public static int maxLastNumber = 10;
+    public static int baseSegment = 0;
 
     public MulticastReceived(MulticastSocket socket) throws UnknownHostException {
        this.socket = socket;
@@ -79,7 +81,18 @@ public class MulticastReceived extends Thread {
                         Multicast.resetGroup(groups);
                     }
                 }else if( receivedObject instanceof SetGroup setGroup ){
-                    setGroup.getSetGroup().forEach( g -> MulticastReceived.groupAll.add(g) );
+                    setGroup.getSetGroup().forEach( g -> {
+                        String[] ipParts = g.getIP().getHostAddress().split("\\.");
+                        int currentBaseSegment = Integer.parseInt(ipParts[ipParts.length - 2]); // octet thứ 3
+                        int lastNumber = Integer.parseInt(ipParts[ipParts.length - 1]);
+                        // Cập nhật countGroup và baseSegment dựa trên IP lớn nhất
+                        if (currentBaseSegment > baseSegment || 
+                            (currentBaseSegment == baseSegment && lastNumber > maxLastNumber)) {
+                            baseSegment = currentBaseSegment;
+                            maxLastNumber = lastNumber;
+                        }
+                        MulticastReceived.groupAll.add(g);
+                    } );
                 }
             } catch (Exception e) {
                 interrupt();

@@ -25,26 +25,57 @@ public class CreateNewGroup extends javax.swing.JDialog {
     private final DefaultListModel<String> listUser= new DefaultListModel<>();
     private final DefaultListModel<String> listUserJoined = new DefaultListModel<>();
     private final Group group = new Group();
-    
-    private static final String BASE_MULTICAST_IP = "230.0.0.";
-    private static final int START_IP_SUFFIX = 10; // Bắt đầu từ 230.0.0.10
-    private static final int MAX_GROUPS = 100; // Số nhóm tối đa (230.0.0.10 đến 230.0.0.109)
+   
+    private static final String BASE_MULTICAST_IP = "230.0.";
+    private static final int MAX_OCTET = 12; // Giá trị tối đa của một octet
     private static Set<String> usedIPs = new HashSet<>();
+    private static int baseSegment = 12;
     
-    public static InetAddress createGroupIP() {
-        for (int i = START_IP_SUFFIX; i < START_IP_SUFFIX + MAX_GROUPS; i++) {
-            String ip = BASE_MULTICAST_IP + i;
+    public static synchronized InetAddress createGroupIP() {
+        int lastNumber = Math.max(MulticastReceived.maxLastNumber, 10);
+        while(true)
+        {
+            String ip = BASE_MULTICAST_IP + baseSegment + "." + lastNumber;
+            // Nếu vượt quá MAX_OCTET, tăng baseSegment và reset countGroup
+            if (lastNumber > MAX_OCTET) {
+                baseSegment++;
+                MulticastReceived.baseSegment = baseSegment;
+                lastNumber = 10; // Reset lại từ 10 (theo yêu cầu)
+                MulticastReceived.maxLastNumber = lastNumber;
+            }
+            // Nếu baseSegment vượt quá giới hạn, không thể cấp phát thêm IP
+            if (baseSegment > MAX_OCTET) {
+                throw new RuntimeException("Không còn địa chỉ IP multicast nào khả dụng.");
+            }
+            // Kiểm tra IP đã dùng
             if (!usedIPs.contains(ip)) {
                 try {
                     InetAddress groupAddress = InetAddress.getByName(ip);
                     usedIPs.add(ip);
+                    lastNumber++;
+                    MulticastReceived.maxLastNumber = lastNumber;
                     return groupAddress;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            } else {
+                lastNumber++;
             }
         }
-        throw new RuntimeException("Không còn địa chỉ IP multicast nào khả dụng.");
+//        if(countGroup <= MAX_GROUPS)
+//        {
+//            String ip = BASE_MULTICAST_IP + countGroup;
+//            try {
+//                    InetAddress groupAddress = InetAddress.getByName(ip);
+//                    usedIPs.add(ip);
+//                    countGroup++;
+//                    MulticastReceived.countGroup = countGroup;
+//                    return groupAddress;
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//        }
+//        throw new RuntimeException("Không còn địa chỉ IP multicast nào khả dụng.");
     }
 
     public Group getGroup() {
@@ -294,17 +325,24 @@ public class CreateNewGroup extends javax.swing.JDialog {
 
     
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        String groupName = txtNameGroup.getText().trim();
-        for(Group i:MulticastReceived.groupAll){
-            if(i.getNameGroup().equals(groupName)){
-                javax.swing.JOptionPane.showMessageDialog(this, "Tên nhóm đã tồn tại. Vui lòng nhập tên khác", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
+
+        try {
+            group.setIP(createGroupIP());
+            group.setPort(contants.PORT);
+            String groupName = txtNameGroup.getText().trim();
+            for(Group i:MulticastReceived.groupAll){
+                if(i.getNameGroup().equals(groupName)){
+                    javax.swing.JOptionPane.showMessageDialog(this, "Tên nhóm đã tồn tại. Vui lòng nhập tên khác", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
+            group.setNameGroup(txtNameGroup.getText());
+            group.setUsers(MulticastReceived.users.stream().filter( user -> listUserJoined.contains(user.getUsername())).toList());
+            
+        } catch (RuntimeException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        group.setNameGroup(txtNameGroup.getText());
-        group.setIP(createGroupIP());
-        group.setPort(contants.PORT);
-        group.setUsers(MulticastReceived.users.stream().filter( user -> listUserJoined.contains(user.getUsername())).toList());
         this.dispose();
         
 //        System.out.println(group);
