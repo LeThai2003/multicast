@@ -2,10 +2,7 @@ package com.mycompany.multicastproject.entity;
 
 import java.io.Serializable;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Group implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -59,4 +56,18 @@ public class Group implements Serializable {
     public String toString() {
         return getNameGroup();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Group group = (Group) o;
+        return nameGroup.equals(group.nameGroup);
+    }
+    @Override
+    public int hashCode() {
+        return nameGroup != null ? nameGroup.hashCode() : 0;
+    }
+
+
 }

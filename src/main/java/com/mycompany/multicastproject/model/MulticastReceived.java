@@ -81,6 +81,8 @@ public class MulticastReceived extends Thread {
                         Multicast.resetGroup(groups);
                     }
                 }else if( receivedObject instanceof SetGroup setGroup ){
+                    if( setGroup.getSetGroup().size() <= 0 ) return;
+                    System.out.println(setGroup.getSetGroup());
                     setGroup.getSetGroup().forEach( g -> {
                         String[] ipParts = g.getIP().getHostAddress().split("\\.");
                         int currentBaseSegment = Integer.parseInt(ipParts[ipParts.length - 2]); // octet thứ 3
