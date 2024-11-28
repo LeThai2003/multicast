@@ -654,7 +654,7 @@ public class Multicast extends javax.swing.JFrame {
         listGroup.clearSelection();
 //        checkButtonEnable();
         listGroup.clearSelection();
-        Multicast.resetAll(MulticastReceived.users);
+//        Multicast.resetAll(MulticastReceived.users);
     }//GEN-LAST:event_listGroupFocusLost
 
     private void inputIpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inputIpMouseClicked
@@ -682,7 +682,7 @@ public class Multicast extends javax.swing.JFrame {
         nameGroup.setText("");
         buttonLeave.setEnabled(false);
         listModelMessage.removeAllElements();
-        resetAll(MulticastReceived.users);
+//        resetAll(MulticastReceived.users);
         
     }//GEN-LAST:event_buttonLeaveActionPerformed
 
