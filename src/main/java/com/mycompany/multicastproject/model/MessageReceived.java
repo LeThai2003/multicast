@@ -75,7 +75,6 @@ public class MessageReceived extends Thread {
                     }
                     System.out.println(joinGroup.geteStatusJoin().equals(EStatusJoin.JOIN));
                     if( group.isPresent() && joinGroup.geteStatusJoin().equals(EStatusJoin.JOIN)){
-                        System.out.println(group.get());
                         group.get().getUsersJoined().add(joinGroup.getUser());
                         Message message = new Message(joinGroup.getUser().getUsername() + " into group", LocalTime.now(),joinGroup.getUser());
                         messageList.add(message);

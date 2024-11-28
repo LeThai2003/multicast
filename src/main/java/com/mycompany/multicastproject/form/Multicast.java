@@ -550,7 +550,7 @@ public class Multicast extends javax.swing.JFrame {
         newGroup.setVisible(true);
         
         Group returnedGroup = newGroup.getGroup();
-//        System.out.println("group: " + returnedGroup);
+        System.out.println("group: " + returnedGroup);
         if(returnedGroup != null)
         {
             listModelGroup.addElement(returnedGroup);

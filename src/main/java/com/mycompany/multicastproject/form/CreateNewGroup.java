@@ -10,10 +10,7 @@ import com.mycompany.multicastproject.entity.User;
 import com.mycompany.multicastproject.model.MulticastReceived;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
@@ -337,9 +334,20 @@ public class CreateNewGroup extends javax.swing.JDialog {
                 }
             }
             group.setNameGroup(txtNameGroup.getText());
-            group.setUsers(MulticastReceived.users.stream().filter( user -> listUserJoined.contains(user.getUsername())).toList());
-            
+            // Lọc danh sách người dùng và chuyển đổi thành danh sách có thể thay đổi
+            List<User> filteredUsers = new ArrayList<>(MulticastReceived.users.stream()
+                    .filter(user -> listUserJoined.contains(user.getUsername()))
+                    .toList());
+
+// Thêm người dùng hiện tại
+            filteredUsers.add(Login.userCurrent);
+
+// Cập nhật lại danh sách trong group
+            group.setUsers(filteredUsers);
+
+
         } catch (RuntimeException e) {
+            e.printStackTrace();
             javax.swing.JOptionPane.showMessageDialog(this, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }

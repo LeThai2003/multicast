@@ -76,6 +76,7 @@ public class MulticastReceived extends Thread {
                 else if( receivedObject instanceof Group groupSender )
                 {
                     System.out.println("Recei group new");
+                    groupSender.getUsers().forEach(u -> System.out.println(u.getUsername()));
                     groupAll.add(groupSender);
                     if( groupSender.getUsers().contains(Login.userCurrent)){
                         groups.add(groupSender);
@@ -83,7 +84,6 @@ public class MulticastReceived extends Thread {
                     }
                 }else if( receivedObject instanceof SetGroup setGroup ){
                     if( setGroup.getSetGroup().size() <= 0 ) return;
-                    System.out.println(setGroup.getSetGroup());
                     setGroup.getSetGroup().forEach( g -> {
                         String[] ipParts = g.getIP().getHostAddress().split("\\.");
                         int currentBaseSegment = Integer.parseInt(ipParts[ipParts.length - 2]); // octet thứ 3
