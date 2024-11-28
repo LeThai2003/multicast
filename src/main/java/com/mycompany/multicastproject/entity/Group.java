@@ -10,7 +10,7 @@ public class Group implements Serializable {
     private InetAddress IP;
     private String nameGroup;
     private List<User> users = new ArrayList<>();
-    private Set<User> usersJoined = new HashSet<>();
+//    private Set<User> usersJoined = new HashSet<>();
 
     public InetAddress getIP() {
         return IP;
@@ -44,13 +44,13 @@ public class Group implements Serializable {
         this.port = port;
     }
 
-    public Set<User> getUsersJoined() {
-        return usersJoined;
-    }
-
-    public void setUsersJoined(Set<User> usersJoined) {
-        this.usersJoined = usersJoined;
-    }
+//    public Set<User> getUsersJoined() {
+//        return usersJoined;
+//    }
+//
+//    public void setUsersJoined(Set<User> usersJoined) {
+//        this.usersJoined = usersJoined;
+//    }
 
     @Override
     public String toString() {
