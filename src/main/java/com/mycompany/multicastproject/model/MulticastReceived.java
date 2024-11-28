@@ -40,6 +40,7 @@ public class MulticastReceived extends Thread {
                 ByteArrayInputStream bis = new ByteArrayInputStream(data);
                 ObjectInputStream ois = new ObjectInputStream(bis);
                 Object receivedObject = ois.readObject();
+                System.out.println("===========Recei message File: Multicast===========");
                 if (receivedObject instanceof User userSender) {
                     System.out.println("multicast received : " + userSender.toString());
                     if (userSender.getStatusUser() != StatusUser.INPUT) {
@@ -95,6 +96,10 @@ public class MulticastReceived extends Thread {
                         }
                         MulticastReceived.groupAll.add(g);
                     } );
+                    if( maxLastNumber == 255 ){
+                        baseSegment += 1;
+                        maxLastNumber = 10;
+                    }else maxLastNumber += 1;
                 }
             } catch (Exception e) {
                 interrupt();

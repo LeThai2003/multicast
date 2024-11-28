@@ -26,14 +26,10 @@ public class Client implements IClient {
 
     public Client() throws IOException {
         this.socket = new MulticastSocket(contants.PORT);
+        socket.setTimeToLive(10);
         multicastReceived = new MulticastReceived(socket);
         multicastReceived.start();
     }
-//    public Client(int port) throws IOException {
-//        this.socket = new MulticastSocket(port);
-//        multicastReceived = new MulticastReceived(socket);
-//        multicastReceived.start();
-//    }
     @Override
     public void login(String name) {
         String username = name;
@@ -59,6 +55,8 @@ public class Client implements IClient {
             mul.setName(MulticastProject.name);
             mul.setLocationRelativeTo(null);
             mul.setVisible(true);
+            byteStream.close();
+            objectStream.close();
         }catch ( Exception e ){
             e.printStackTrace();
         }

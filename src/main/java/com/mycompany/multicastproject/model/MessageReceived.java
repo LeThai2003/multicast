@@ -8,6 +8,7 @@ import com.mycompany.multicastproject.entity.User;
 import com.mycompany.multicastproject.form.EStatusJoin;
 import com.mycompany.multicastproject.form.Login;
 import com.mycompany.multicastproject.form.Multicast;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -74,6 +75,7 @@ public class MessageReceived extends Thread {
                     }
                     System.out.println(joinGroup.geteStatusJoin().equals(EStatusJoin.JOIN));
                     if( group.isPresent() && joinGroup.geteStatusJoin().equals(EStatusJoin.JOIN)){
+                        System.out.println(group.get());
                         group.get().getUsersJoined().add(joinGroup.getUser());
                         Message message = new Message(joinGroup.getUser().getUsername() + " into group", LocalTime.now(),joinGroup.getUser());
                         messageList.add(message);

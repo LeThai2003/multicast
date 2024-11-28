@@ -27,9 +27,9 @@ public class CreateNewGroup extends javax.swing.JDialog {
     private final Group group = new Group();
    
     private static final String BASE_MULTICAST_IP = "230.0.";
-    private static final int MAX_OCTET = 12; // Giá trị tối đa của một octet
+    private static final int MAX_OCTET = 255; // Giá trị tối đa của một octet
     private static Set<String> usedIPs = new HashSet<>();
-    private static int baseSegment = 12;
+    private static int baseSegment = 0;
     
     public static synchronized InetAddress createGroupIP() {
         int lastNumber = Math.max(MulticastReceived.maxLastNumber, 10);
